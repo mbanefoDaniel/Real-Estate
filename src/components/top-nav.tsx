@@ -95,7 +95,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
               Menu
             </summary>
             <div
-              className="absolute right-0 z-[140] mt-2 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-black/10 bg-white p-2 shadow-lg"
+              className="absolute left-0 z-[140] mt-2 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-black/10 bg-white p-2 shadow-lg"
               role="menu"
             >
               {sharedLinks.map((link) => (
