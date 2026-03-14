@@ -1,0 +1,46 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="180" y1="120" x2="1400" y2="980" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7fbf6"/>
+      <stop offset="1" stop-color="#deede8"/>
+    </linearGradient>
+    <linearGradient id="faceA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e6f3ef"/>
+    </linearGradient>
+    <linearGradient id="faceB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d6ece4"/>
+      <stop offset="1" stop-color="#b9ddd1"/>
+    </linearGradient>
+    <linearGradient id="faceC" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b7d9ce"/>
+      <stop offset="1" stop-color="#95c4b6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="1200" fill="url(#sky)"/>
+
+  <g opacity="0.95">
+    <polygon points="300,810 520,690 740,810 520,930" fill="url(#faceA)"/>
+    <polygon points="520,690 740,810 740,1010 520,890" fill="url(#faceB)"/>
+    <polygon points="300,810 520,690 520,890 300,1010" fill="url(#faceC)"/>
+
+    <polygon points="720,770 900,670 1080,770 900,870" fill="url(#faceA)"/>
+    <polygon points="900,670 1080,770 1080,950 900,850" fill="url(#faceB)"/>
+    <polygon points="720,770 900,670 900,850 720,950" fill="url(#faceC)"/>
+
+    <polygon points="980,860 1160,760 1340,860 1160,960" fill="url(#faceA)"/>
+    <polygon points="1160,760 1340,860 1340,1040 1160,940" fill="url(#faceB)"/>
+    <polygon points="980,860 1160,760 1160,940 980,1040" fill="url(#faceC)"/>
+
+    <polygon points="160,930 320,840 480,930 320,1020" fill="url(#faceA)"/>
+    <polygon points="320,840 480,930 480,1090 320,1000" fill="url(#faceB)"/>
+    <polygon points="160,930 320,840 320,1000 160,1090" fill="url(#faceC)"/>
+  </g>
+
+  <g opacity="0.25" stroke="#8ab9aa" stroke-width="2">
+    <line x1="0" y1="980" x2="1600" y2="980"/>
+    <line x1="0" y1="1030" x2="1600" y2="1030"/>
+    <line x1="0" y1="1080" x2="1600" y2="1080"/>
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" fill="none">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1600" y2="1100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0f9ff"/>
+      <stop offset="0.45" stop-color="#eefbf4"/>
+      <stop offset="1" stop-color="#fff6e6"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(280 180) rotate(35) scale(520 310)">
+      <stop stop-color="#22d3ee" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1340 260) rotate(145) scale(560 360)">
+      <stop stop-color="#f59e0b" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowC" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(920 980) rotate(-20) scale(680 320)">
+      <stop stop-color="#10b981" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M36 0H0V36" stroke="#0f172a" stroke-opacity="0.12" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="1100" fill="url(#base)"/>
+  <rect width="1600" height="1100" fill="url(#glowA)"/>
+  <rect width="1600" height="1100" fill="url(#glowB)"/>
+  <rect width="1600" height="1100" fill="url(#glowC)"/>
+  <rect width="1600" height="1100" fill="url(#grid)" opacity="0.38"/>
+
+  <g stroke="#0f172a" stroke-opacity="0.18" fill="none">
+    <path d="M-120 740C120 590 360 590 620 740C860 880 1120 880 1360 740C1520 640 1660 620 1800 680" stroke-width="1.4"/>
+    <path d="M-100 810C120 670 350 670 600 810C860 950 1120 950 1380 810C1540 720 1680 700 1820 760" stroke-width="1.1"/>
+    <path d="M-140 670C80 540 320 540 560 670C820 810 1080 810 1320 670C1500 560 1660 540 1800 600" stroke-width="1.2"/>
+  </g>
+</svg>
