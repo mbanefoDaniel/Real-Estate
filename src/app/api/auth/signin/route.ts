@@ -72,16 +72,24 @@ export async function POST(request: NextRequest) {
       role: user.role,
     });
 
-    const response = NextResponse.json({
+    const responseBody = JSON.stringify({
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
     });
 
-    response.headers.append("Set-Cookie", buildAuthSetCookieHeader(token));
+    const setCookieHeader = buildAuthSetCookieHeader(token);
 
-    return response;
+    return new Response(responseBody, {
+      status: 200,
+      headers: [
+        ["Content-Type", "application/json"],
+        ["Set-Cookie", setCookieHeader],
+        ["Set-Cookie", "signin_test=ok; Path=/; Max-Age=300; SameSite=Lax"],
+        ["X-Debug-Cookie-Length", String(setCookieHeader.length)],
+      ],
+    });
   } catch {
     return NextResponse.json(
       { error: "Unable to sign in." },
