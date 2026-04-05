@@ -271,7 +271,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
         /* If /api/auth/me says no user, the session cookie is
            expired or missing — don't trust the stale sessionUser. */
         if (!meUser) {
-          setSubscriptionBadge(sessionUser.role === "USER" ? "INACTIVE" : null);
+          setSubscriptionBadge(sessionUser?.role === "USER" ? "INACTIVE" : null);
           return;
         }
 
@@ -281,7 +281,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
         }
 
         /* Load subscription only after verifying the session is valid */
-        if (sessionUser.role === "USER") {
+        if (sessionUser?.role === "USER") {
           try {
             const subRes = await fetch("/api/subscription/status", { cache: "no-store" });
             if (!subRes.ok) {
@@ -295,7 +295,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
           }
         }
       } catch {
-        if (mounted && sessionUser.role === "USER") {
+        if (mounted && sessionUser?.role === "USER") {
           setSubscriptionBadge("INACTIVE");
         }
       }
