@@ -13,6 +13,11 @@ export async function verifyCaptchaToken(request: NextRequest, token?: string | 
     return { ok: true, mode: "disabled" as const };
   }
 
+  // Skip captcha verification in development (Turnstile keys are domain-locked to production)
+  if (process.env.NODE_ENV !== "production") {
+    return { ok: true, mode: "disabled" as const };
+  }
+
   if (!token) {
     return { ok: false, mode: "enabled" as const, error: "captcha token is required." };
   }

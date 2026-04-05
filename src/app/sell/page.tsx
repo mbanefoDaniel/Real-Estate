@@ -139,6 +139,7 @@ export default function SellPage() {
 
     setStatus({ type: "loading", message: "Uploading image and creating listing..." });
 
+    try {
     const form = event.currentTarget;
     const formData = new FormData(form);
     const file = formData.get("image") as File | null;
@@ -212,6 +213,12 @@ export default function SellPage() {
     clearDraft();
     form.reset();
     setPreviewUrl(null);
+    } catch {
+      setStatus({
+        type: "error",
+        message: "Network error. Please check your connection and try again.",
+      });
+    }
   }
 
   return (

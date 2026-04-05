@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
 const AUTH_COOKIE_NAME = "nph_auth";
-const SESSION_TTL_SECONDS = 60 * 60;          // 1-hour JWT lifetime
+const SESSION_TTL_SECONDS = 60 * 60 * 24;      // 24-hour JWT lifetime
 const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes client-side idle limit
 
 type SessionUser = {

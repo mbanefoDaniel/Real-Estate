@@ -29,7 +29,7 @@ const scriptId = "cf-turnstile-script";
 
 export default function TurnstileCaptcha({ onTokenChange, className }: TurnstileCaptchaProps) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-  console.log("Turnstile siteKey:", siteKey);
+  const isDev = process.env.NODE_ENV !== "production";
   const [ready, setReady] = useState(() =>
     typeof window !== "undefined" ? Boolean(window.turnstile) : false
   );
@@ -108,7 +108,7 @@ export default function TurnstileCaptcha({ onTokenChange, className }: Turnstile
     };
   }, [onTokenChange, siteKey]);
 
-  if (!siteKey) {
+  if (!siteKey || isDev) {
     return null;
   }
 
