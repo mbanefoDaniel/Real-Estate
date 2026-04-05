@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useAuth } from "@/components/auth-provider";
 
 type SessionUser = {
   id: string;
@@ -34,6 +35,7 @@ type SubscriptionState = {
 };
 
 export default function ProfileDashboardPage() {
+  const authUser = useAuth();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [listingCount, setListingCount] = useState<number>(0);
   const [savedSearchCount, setSavedSearchCount] = useState<number>(0);
@@ -65,12 +67,18 @@ export default function ProfileDashboardPage() {
           return;
         }
 
-        if (!currentUser) {
+        if (!currentUser && !authUser) {
           setStatus({ type: "error", message: "Sign in to access your profile dashboard." });
           return;
         }
 
-        setUser(currentUser);
+        const resolvedUser = currentUser ?? (authUser ? { ...authUser, createdAt: undefined, profileImageUrl: null, kycStatus: "NOT_SUBMITTED" as const } : null);
+        if (!resolvedUser) {
+          setStatus({ type: "error", message: "Sign in to access your profile dashboard." });
+          return;
+        }
+
+        setUser(resolvedUser);
         setDisplayName(currentUser.name ?? "");
 
         if (currentUser.role === "USER") {

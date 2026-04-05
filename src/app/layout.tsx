@@ -6,6 +6,7 @@ import TopNav from "@/components/top-nav";
 import SiteFooter from "@/components/site-footer";
 import BackgroundParallax from "@/components/background-parallax";
 import InactivityGuard from "@/components/inactivity-guard";
+import { AuthProvider } from "@/components/auth-provider";
 import { getAuthCookieName, verifySessionToken } from "@/lib/auth";
 
 const geistSans = Geist({
@@ -38,12 +39,14 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
       >
         <BackgroundParallax />
+        <AuthProvider user={sessionUser}>
         <div className="relative z-10 flex min-h-screen flex-col">
           <TopNav initialUser={sessionUser} />
           {sessionUser && <InactivityGuard />}
           <div className="flex-1">{children}</div>
           <SiteFooter initialUser={sessionUser} />
         </div>
+        </AuthProvider>
       </body>
     </html>
   );

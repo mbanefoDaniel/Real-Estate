@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { cloudinary } from "@/lib/cloudinary";
 import { logError } from "@/lib/logger";
 
+export const config = {
+  api: { bodyParser: { sizeLimit: "6mb" } },
+};
+
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/components/auth-provider";
 
 type SavedSearch = {
   id: string;
@@ -25,11 +26,12 @@ type Status = {
 };
 
 export default function SavedSearchesPage() {
+  const authUser = useAuth();
   const [items, setItems] = useState<SavedSearch[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<Status>({ type: "idle", message: "" });
-  const [authReady, setAuthReady] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
+  const [authReady, setAuthReady] = useState(true);
+  const [signedIn, setSignedIn] = useState(Boolean(authUser));
 
   async function loadSavedSearches() {
     setLoading(true);
@@ -49,21 +51,18 @@ export default function SavedSearchesPage() {
 
   useEffect(() => {
     async function bootstrap() {
-      const response = await fetch("/api/auth/me", { cache: "no-store" });
-      const data = await response.json();
-      const ok = Boolean(data?.user?.id);
-      setSignedIn(ok);
-      setAuthReady(true);
-
-      if (ok) {
+      if (authUser) {
+        setSignedIn(true);
         await loadSavedSearches();
       } else {
+        setSignedIn(false);
         setLoading(false);
       }
+      setAuthReady(true);
     }
 
     bootstrap();
-  }, []);
+  }, [authUser]);
 
   async function toggleAlert(item: SavedSearch, alertEnabled: boolean) {
     const response = await fetch(`/api/saved-searches/${item.id}`, {

@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getOptimizedListingImage } from "@/lib/image-url";
+import { useAuth } from "@/components/auth-provider";
 
 type ListingItem = {
   id: string;
@@ -65,6 +66,7 @@ function ngn(value: number) {
 }
 
 export default function MyListingsPage() {
+  const authUser = useAuth();
   const [listings, setListings] = useState<ListingItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>(defaultStatus);
@@ -127,9 +129,17 @@ export default function MyListingsPage() {
 
   useEffect(() => {
     async function bootstrapAuth() {
-      const response = await fetch("/api/auth/me", { cache: "no-store" });
-      const data = await response.json();
-      const email = data?.user?.email ?? "";
+      let email = authUser?.email ?? "";
+
+      if (!email) {
+        try {
+          const response = await fetch("/api/auth/me", { cache: "no-store" });
+          const data = await response.json();
+          email = data?.user?.email ?? "";
+        } catch {
+          // fall through
+        }
+      }
 
       if (email) {
         setOwnerEmail(email);

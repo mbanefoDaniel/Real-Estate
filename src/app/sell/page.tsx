@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import TurnstileCaptcha from "@/components/turnstile-captcha";
+import { useAuth } from "@/components/auth-provider";
 
 type Status = {
   type: "idle" | "loading" | "success" | "error";
@@ -18,11 +19,12 @@ const initialStatus: Status = {
 const DRAFT_KEY = "sell-listing-draft-v1";
 
 export default function SellPage() {
+  const sessionUser = useAuth();
   const [status, setStatus] = useState<Status>(initialStatus);
-  const [ownerEmail, setOwnerEmail] = useState("");
-  const [authReady, setAuthReady] = useState(false);
+  const [ownerEmail, setOwnerEmail] = useState(sessionUser?.email ?? "");
+  const [authReady, setAuthReady] = useState(true);
   const [subscriptionReady, setSubscriptionReady] = useState(false);
-  const [subscriptionActive, setSubscriptionActive] = useState(false);
+  const [subscriptionActive, setSubscriptionActive] = useState(sessionUser?.role === "ADMIN");
   const [subscriptionExpiresAt, setSubscriptionExpiresAt] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState("");
@@ -50,59 +52,36 @@ export default function SellPage() {
   }, [previewUrl]);
 
   useEffect(() => {
-    async function loadSession() {
+    async function loadSubscription() {
+      if (!sessionUser || sessionUser.role === "ADMIN") {
+        setSubscriptionReady(true);
+        return;
+      }
+
       try {
-        const response = await fetch("/api/auth/me", { cache: "no-store" });
-        if (!response.ok) {
-          setOwnerEmail("");
-          return;
-        }
-
-        const data = await response.json();
-        setOwnerEmail(data?.user?.email ?? "");
-        const isAdmin = data?.user?.role === "ADMIN";
-
-        if (data?.user?.id) {
-          if (isAdmin) {
-            setSubscriptionActive(true);
-            setSubscriptionExpiresAt(null);
-            setSubscriptionReady(true);
-            return;
-          }
-
-          try {
-            const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store" });
-            if (subscriptionResponse.ok) {
-              const subscriptionData = await subscriptionResponse.json();
-              setSubscriptionActive(Boolean(subscriptionData?.active));
-              setSubscriptionExpiresAt(subscriptionData?.subscription?.expiresAt ?? null);
-              setSubscriptionStatus(
-                typeof subscriptionData?.subscription?.status === "string"
-                  ? subscriptionData.subscription.status
-                  : null
-              );
-            } else {
-              setSubscriptionActive(false);
-              setSubscriptionStatus(null);
-            }
-          } catch {
-            setSubscriptionActive(false);
-            setSubscriptionStatus(null);
-          } finally {
-            setSubscriptionReady(true);
-          }
+        const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store" });
+        if (subscriptionResponse.ok) {
+          const subscriptionData = await subscriptionResponse.json();
+          setSubscriptionActive(Boolean(subscriptionData?.active));
+          setSubscriptionExpiresAt(subscriptionData?.subscription?.expiresAt ?? null);
+          setSubscriptionStatus(
+            typeof subscriptionData?.subscription?.status === "string"
+              ? subscriptionData.subscription.status
+              : null
+          );
         } else {
-          setSubscriptionReady(true);
+          setSubscriptionActive(false);
+          setSubscriptionStatus(null);
         }
       } catch {
-        setOwnerEmail("");
-        setSubscriptionReady(true);
+        setSubscriptionActive(false);
+        setSubscriptionStatus(null);
       } finally {
-        setAuthReady(true);
+        setSubscriptionReady(true);
       }
     }
 
-    void loadSession();
+    void loadSubscription();
   }, []);
 
   function updateDraftValue(name: string, value: string) {
@@ -126,6 +105,35 @@ export default function SellPage() {
     }
   }
 
+  async function compressImage(file: File, maxWidth = 1600, quality = 0.8): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const scale = Math.min(1, maxWidth / img.width);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { resolve(file); return; }
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) { resolve(file); return; }
+            resolve(new File([blob], file.name, { type: "image/jpeg" }));
+          },
+          "image/jpeg",
+          quality,
+        );
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Failed to load image")); };
+      img.src = url;
+    });
+  }
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -142,11 +150,16 @@ export default function SellPage() {
     try {
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const file = formData.get("image") as File | null;
+    let file = formData.get("image") as File | null;
 
     let imageUrl: string | null = null;
 
     if (file && file.size > 0) {
+      // Compress large images (especially from mobile cameras) before uploading
+      if (file.size > 1024 * 1024) {
+        file = await compressImage(file);
+      }
+
       const uploadFormData = new FormData();
       uploadFormData.append("file", file);
 
