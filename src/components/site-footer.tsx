@@ -55,7 +55,7 @@ export default function SiteFooter({ initialUser }: SiteFooterProps) {
               <path d="M3 10.5L12 3l9 7.5" />
               <path d="M5 9.5V20h14V9.5" />
             </svg>
-            NaijaProperty Hub
+            Christoland
           </h2>
           <p className="mt-3 max-w-md text-sm text-white/80">
             Trusted Nigerian real estate platform for verified listings, faster buyer enquiries, and secure property discovery.

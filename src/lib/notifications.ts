@@ -63,7 +63,7 @@ export async function sendModerationOwnerNotification(input: ModerationNotificat
     input.moderatedByEmail ? `Reviewed by: ${input.moderatedByEmail}` : "",
     input.status === "REJECTED" && input.reason ? `Reason: ${input.reason}` : "",
     "",
-    "Sign in to NaijaProperty Hub to review your listing status.",
+    "Sign in to Christoland to review your listing status.",
   ]
     .filter(Boolean)
     .join("\n");
@@ -76,7 +76,7 @@ export async function sendModerationOwnerNotification(input: ModerationNotificat
 }
 
 export async function sendPasswordResetEmail(input: { email: string; resetUrl: string }) {
-  const subject = "Reset your NaijaProperty Hub password";
+  const subject = "Reset your Christoland password";
   const text = [
     "We received a request to reset your password.",
     "",

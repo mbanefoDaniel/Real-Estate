@@ -1,4 +1,4 @@
-# NaijaProperty Hub Implementation Steps
+# Christoland Implementation Steps
 
 ## Phase 1: Identity and Access
 1. Create account and sign in flows.

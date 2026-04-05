@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
           "",
           ...lines,
           "",
-          "Sign in to NaijaProperty Hub to view all matching properties.",
+          "Sign in to Christoland to view all matching properties.",
         ].join("\n"),
       });
 

@@ -5,6 +5,7 @@ import "./globals.css";
 import TopNav from "@/components/top-nav";
 import SiteFooter from "@/components/site-footer";
 import BackgroundParallax from "@/components/background-parallax";
+import InactivityGuard from "@/components/inactivity-guard";
 import { getAuthCookieName, verifySessionToken } from "@/lib/auth";
 
 const geistSans = Geist({
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NaijaProperty Hub | Land and House Sales",
+  title: "Christoland | Land and House Sales",
   description: "Browse and publish verified land and house listings across Nigeria.",
 };
 
@@ -39,6 +40,7 @@ export default async function RootLayout({
         <BackgroundParallax />
         <div className="relative z-10 flex min-h-screen flex-col">
           <TopNav initialUser={sessionUser} />
+          {sessionUser && <InactivityGuard />}
           <div className="flex-1">{children}</div>
           <SiteFooter initialUser={sessionUser} />
         </div>

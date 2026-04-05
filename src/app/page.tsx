@@ -133,7 +133,7 @@ export default async function Home() {
         <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200 sm:text-sm">
-              NaijaProperty Hub
+              Christoland
             </p>
             <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
               Find verified homes and land across

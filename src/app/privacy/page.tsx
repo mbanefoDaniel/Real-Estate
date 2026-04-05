@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Privacy Policy | NaijaProperty Hub",
+  title: "Privacy Policy | Christoland",
 };
 
 export default function PrivacyPage() {

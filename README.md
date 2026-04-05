@@ -143,7 +143,7 @@ Example response:
 ```json
 {
 	"imageUrl": "https://res.cloudinary.com/.../image/upload/...jpg",
-	"publicId": "naijapropertyhub/abc123"
+	"publicId": "christoland/abc123"
 }
 ```
 

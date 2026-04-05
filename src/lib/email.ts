@@ -43,8 +43,8 @@ function getSmtpConfig() {
 }
 
 function getFromAddress() {
-  const fromEmail = process.env.SMTP_FROM_EMAIL || "no-reply@naijapropertyhub.ng";
-  const fromName = process.env.SMTP_FROM_NAME || "NaijaProperty Hub";
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "no-reply@christoland.ng";
+  const fromName = process.env.SMTP_FROM_NAME || "Christoland";
   return `${fromName} <${fromEmail}>`;
 }
 

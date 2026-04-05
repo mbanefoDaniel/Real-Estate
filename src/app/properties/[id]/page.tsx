@@ -35,12 +35,12 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
 
   if (!property) {
     return {
-      title: "Property Not Found | NaijaProperty Hub",
+      title: "Property Not Found | Christoland",
     };
   }
 
   return {
-    title: `${property.title} in ${property.city} | NaijaProperty Hub`,
+    title: `${property.title} in ${property.city} | Christoland`,
     description: property.description.slice(0, 160),
     alternates: {
       canonical: `/properties/${property.id}`,

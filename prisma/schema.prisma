@@ -136,7 +136,7 @@ model Property {
   description String
   city        String
   address     String
-  ownerEmail  String   @default("unknown@naijapropertyhub.ng")
+  ownerEmail  String   @default("unknown@christoland.ng")
   kind        PropertyKind @default(HOUSE)
   listingTerm ListingTerm  @default(SALE)
   status      ListingStatus @default(PENDING)

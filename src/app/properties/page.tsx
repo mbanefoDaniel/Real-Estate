@@ -231,8 +231,8 @@ export async function generateMetadata({ searchParams }: PropertiesPageProps): P
   const titleBits = [location, category, type].filter(Boolean);
   const title =
     titleBits.length > 0
-      ? `${titleBits.join(" ")} Properties | NaijaProperty Hub`
-      : "Browse Properties in Nigeria | NaijaProperty Hub";
+      ? `${titleBits.join(" ")} Properties | Christoland`
+      : "Browse Properties in Nigeria | Christoland";
 
   const description = location
     ? `Search approved land and house listings in ${location}. Filter by price, beds, and property type.`

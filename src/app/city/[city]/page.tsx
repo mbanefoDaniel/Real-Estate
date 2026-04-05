@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
   const cityName = toCityName(city);
 
   return {
-    title: `${cityName} Properties | NaijaProperty Hub`,
+    title: `${cityName} Properties | Christoland`,
     description: `Browse approved land and house listings in ${cityName}.`,
     alternates: {
       canonical: `/city/${encodeURIComponent(city)}`,

@@ -45,7 +45,7 @@ export default function AdminShell({ children, adminEmail }: AdminShellProps) {
         <div className="grid gap-4 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-6">
           <aside className="rounded-2xl border border-black/10 bg-surface p-4 shadow-sm backdrop-blur-[1px] lg:sticky lg:top-24 lg:h-fit">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted">Admin Panel</p>
-            <p className="mt-1 text-sm font-semibold text-foreground">NaijaProperty Hub</p>
+            <p className="mt-1 text-sm font-semibold text-foreground">Christoland</p>
             {adminEmail ? <p className="mt-1 text-xs text-muted">{adminEmail}</p> : null}
 
             <nav className="mt-4 grid gap-2">

@@ -215,279 +215,417 @@ export default function SellPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-8 sm:px-6 md:px-10 md:py-10">
-      <section className="relative overflow-hidden rounded-3xl p-0 shadow-lg ring-1 ring-black/10 sm:p-0">
-        {/* Premium gradient background */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-accent/80 via-blue-100 to-white opacity-90" />
-        <div className="relative z-10 p-6 sm:p-8">
-          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl text-accent drop-shadow-lg">Post a Property</h1>
-          <p className="mt-3 text-lg text-black/80 font-medium drop-shadow-sm">
-            Upload a property photo and publish land or house listings for buyers across Nigeria.
+    <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-8 sm:px-6 md:px-10 md:py-12">
+      {/* Hero header */}
+      <section className="relative overflow-hidden rounded-3xl border border-black/10 bg-[#0d1f23] p-6 text-white shadow-sm sm:p-8 md:p-10">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(34,211,238,0.22),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(245,158,11,0.18),transparent_36%)]" />
+          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        </div>
+        <div className="relative z-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200">List Your Property</p>
+          <h1 className="mt-3 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
+            Publish your listing to <span className="text-amber-300">thousands of buyers</span>
+          </h1>
+          <p className="mt-4 max-w-xl text-sm text-white/75 sm:text-base">
+            Upload photos, set your price, and connect with verified buyers across Nigeria — all in one step.
           </p>
+          <div className="mt-5 flex flex-wrap gap-3 text-xs font-semibold">
+            <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">Auto-saved drafts</span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">Image optimization</span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 backdrop-blur-sm">Instant preview</span>
+          </div>
+        </div>
+      </section>
 
-        {!authReady || !subscriptionReady ? (
-          <p className="mt-6 text-sm text-muted">Checking your sign-in status...</p>
-        ) : !ownerEmail ? (
-          <div className="mt-6 rounded-2xl border border-black/10 bg-white/80 backdrop-blur p-5 shadow-md">
-            <p className="text-sm text-muted">
-              You must sign in before you can post a property listing.
+      {/* Status / auth gates */}
+      {!authReady || !subscriptionReady ? (
+        <section className="mt-8 flex items-center justify-center rounded-2xl border border-black/10 bg-surface p-10 shadow-sm">
+          <div className="text-center">
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+            <p className="mt-4 text-sm text-muted">Checking your account status...</p>
+          </div>
+        </section>
+      ) : !ownerEmail ? (
+        <section className="mt-8 rounded-2xl border border-black/10 bg-surface p-6 shadow-sm sm:p-8">
+          <div className="mx-auto max-w-md text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
+              <svg viewBox="0 0 24 24" className="h-7 w-7 text-accent" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.118a7.5 7.5 0 0 1 15 0A17.93 17.93 0 0 1 12 21.75c-2.676 0-5.216-.584-7.5-1.632Z" /></svg>
+            </div>
+            <h2 className="mt-4 text-xl font-semibold">Sign in to get started</h2>
+            <p className="mt-2 text-sm text-muted">
+              You must be signed in with an active account before posting a property listing.
             </p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-6 flex justify-center gap-3">
               <Link
                 href="/auth/sign-in"
-                className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong"
+                className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-strong"
               >
                 Sign In
               </Link>
               <Link
                 href="/auth/sign-up"
-                className="rounded-full border border-black/15 px-5 py-2 text-sm font-semibold transition hover:bg-black/5"
+                className="rounded-full border border-black/15 px-6 py-2.5 text-sm font-semibold transition hover:bg-black/5"
               >
                 Create Account
               </Link>
             </div>
           </div>
-        ) : !subscriptionActive ? (
-          <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50/90 backdrop-blur p-5 shadow-md">
-            <p className="text-sm font-semibold text-amber-900">
-              Active monthly subscription required.
-            </p>
+        </section>
+      ) : !subscriptionActive ? (
+        <section className="mt-8 rounded-2xl border border-amber-200 bg-amber-50/80 p-6 shadow-sm sm:p-8">
+          <div className="mx-auto max-w-md text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-100">
+              <svg viewBox="0 0 24 24" className="h-7 w-7 text-amber-600" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
+            </div>
+            <h2 className="mt-4 text-xl font-semibold text-amber-900">Subscription required</h2>
             <p className="mt-2 text-sm text-amber-800">
-              Subscribe before posting properties. Your subscription unlocks listing submissions for 30 days.
+              An active monthly subscription is needed to post listings. Your plan unlocks submissions for 30 days.
             </p>
-            <p className="mt-2 text-sm text-amber-900">
-              Note: starting checkout alone does not unlock posting. Payment must be completed and confirmed.
+            <p className="mt-2 text-xs text-amber-700">
+              Starting checkout alone does not unlock posting — payment must be completed and confirmed.
             </p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-6">
               <Link
                 href="/pricing"
-                className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong"
+                className="inline-flex rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-strong"
               >
-                Complete Subscription
+                View Pricing &amp; Subscribe
               </Link>
             </div>
             {subscriptionStatus === "PENDING" ? (
-              <p className="mt-3 text-xs font-semibold text-amber-700">
-                Your last payment attempt is still pending. Finish checkout on the pricing page, then return here.
+              <p className="mt-4 text-xs font-semibold text-amber-700">
+                Your last payment is still pending. Complete checkout on the pricing page, then return here.
               </p>
             ) : null}
             {subscriptionExpiresAt ? (
-              <p className="mt-3 text-xs text-amber-700">Previous expiry: {new Date(subscriptionExpiresAt).toLocaleDateString()}</p>
+              <p className="mt-3 text-xs text-amber-600">Previous expiry: {new Date(subscriptionExpiresAt).toLocaleDateString()}</p>
             ) : null}
           </div>
-        ) : (
-          <form className="mt-8 grid gap-4" onSubmit={onSubmit}>
-            <input
-              name="title"
-              required
-              placeholder="Title"
-              value={draft.title ?? ""}
-              onChange={(event) => updateDraftValue("title", event.target.value)}
-              className="rounded-xl border border-black/10 bg-white px-4 py-3"
-            />
-            <textarea
-              name="description"
-              required
-              placeholder="Description"
-              rows={4}
-              value={draft.description ?? ""}
-              onChange={(event) => updateDraftValue("description", event.target.value)}
-              className="rounded-xl border border-black/10 bg-white px-4 py-3"
-            />
-            <input
-              name="city"
-              required
-              placeholder="City (e.g. Lagos)"
-              value={draft.city ?? ""}
-              onChange={(event) => updateDraftValue("city", event.target.value)}
-              className="rounded-xl border border-black/10 bg-white px-4 py-3"
-            />
-            <input
-              name="address"
-              required
-              placeholder="Address"
-              value={draft.address ?? ""}
-              onChange={(event) => updateDraftValue("address", event.target.value)}
-              className="rounded-xl border border-black/10 bg-white px-4 py-3"
-            />
-            <input
-              name="ownerEmail"
-              type="email"
-              required
-              value={ownerEmail}
-              readOnly
-              placeholder="Owner Email"
-              className="rounded-xl border border-black/10 bg-white px-4 py-3"
-            />
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label className="text-sm text-muted">
-                Property Type
-                <select
-                  name="kind"
-                  value={draft.kind ?? "HOUSE"}
-                  onChange={(event) => updateDraftValue("kind", event.target.value)}
-                  className="mt-1 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-black"
-                >
-                  <option value="HOUSE">House</option>
-                  <option value="APARTMENT">Apartment</option>
-                  <option value="LAND">Land</option>
-                </select>
-              </label>
-
-              <label className="text-sm text-muted">
-                Listing Type
-                <select
-                  name="listingTerm"
-                  value={draft.listingTerm ?? "SALE"}
-                  onChange={(event) => updateDraftValue("listingTerm", event.target.value)}
-                  className="mt-1 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-black"
-                >
-                  <option value="SALE">For Sale</option>
-                  <option value="LEASE">For Lease</option>
-                </select>
-              </label>
+        </section>
+      ) : (
+        /* Main form */
+        <form className="mt-8 grid gap-6 md:grid-cols-[minmax(0,1fr)_320px]" onSubmit={onSubmit}>
+          {/* Left column — form fields */}
+          <div className="grid gap-6">
+            {/* Basic info card */}
+            <div className="rounded-2xl border border-black/10 bg-surface p-5 shadow-sm sm:p-6">
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-sm font-bold text-accent">1</span>
+                <h2 className="text-lg font-semibold">Basic Information</h2>
+              </div>
+              <div className="mt-5 grid gap-4">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Title</label>
+                  <input
+                    name="title"
+                    required
+                    placeholder="e.g. Lekki Detached Duplex"
+                    value={draft.title ?? ""}
+                    onChange={(event) => updateDraftValue("title", event.target.value)}
+                    className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Description</label>
+                  <textarea
+                    name="description"
+                    required
+                    placeholder="Describe the property — features, layout, surroundings..."
+                    rows={4}
+                    value={draft.description ?? ""}
+                    onChange={(event) => updateDraftValue("description", event.target.value)}
+                    className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">City</label>
+                    <input
+                      name="city"
+                      required
+                      placeholder="e.g. Lagos"
+                      value={draft.city ?? ""}
+                      onChange={(event) => updateDraftValue("city", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Address</label>
+                    <input
+                      name="address"
+                      required
+                      placeholder="Street address"
+                      value={draft.address ?? ""}
+                      onChange={(event) => updateDraftValue("address", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                </div>
+                <input
+                  name="ownerEmail"
+                  type="email"
+                  required
+                  value={ownerEmail}
+                  readOnly
+                  className="rounded-xl border border-black/5 bg-black/[0.02] px-4 py-3 text-sm text-muted"
+                />
+              </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <input
-                name="price"
-                type="number"
-                min={1}
-                required
-                placeholder="Price (NGN)"
-                value={draft.price ?? ""}
-                onChange={(event) => updateDraftValue("price", event.target.value)}
-                className="rounded-xl border border-black/10 bg-white px-4 py-3"
-              />
-              <input
-                name="areaSqft"
-                type="number"
-                min={1}
-                required
-                placeholder="Area (sqft)"
-                value={draft.areaSqft ?? ""}
-                onChange={(event) => updateDraftValue("areaSqft", event.target.value)}
-                className="rounded-xl border border-black/10 bg-white px-4 py-3"
-              />
-              <input
-                name="bedrooms"
-                type="number"
-                min={0}
-                required
-                placeholder="Bedrooms"
-                value={draft.bedrooms ?? ""}
-                onChange={(event) => updateDraftValue("bedrooms", event.target.value)}
-                className="rounded-xl border border-black/10 bg-white px-4 py-3"
-              />
-              <input
-                name="bathrooms"
-                type="number"
-                min={0}
-                step="0.5"
-                required
-                placeholder="Bathrooms"
-                value={draft.bathrooms ?? ""}
-                onChange={(event) => updateDraftValue("bathrooms", event.target.value)}
-                className="rounded-xl border border-black/10 bg-white px-4 py-3"
-              />
-            </div>
-
-            <label className="rounded-xl border border-dashed border-black/20 bg-white px-4 py-3 text-sm text-muted">
-              Property Image (max 5MB)
-              <input
-                name="image"
-                type="file"
-                accept="image/*"
-                className="mt-2 block w-full"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (!file) {
-                    setPreviewUrl(null);
-                    return;
-                  }
-
-                  const objectUrl = URL.createObjectURL(file);
-                  setPreviewUrl((prev) => {
-                    if (prev) {
-                      URL.revokeObjectURL(prev);
-                    }
-                    return objectUrl;
-                  });
-                }}
-              />
-            </label>
-
-            {previewUrl ? (
-              <div className="rounded-xl border border-black/10 bg-white p-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Image Preview</p>
-                <div className="relative mt-2 h-48 w-full overflow-hidden rounded-lg">
-                  <Image src={previewUrl} alt="Property preview" fill className="object-cover" sizes="100vw" unoptimized />
+            {/* Property details card */}
+            <div className="rounded-2xl border border-black/10 bg-surface p-5 shadow-sm sm:p-6">
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-sm font-bold text-accent">2</span>
+                <h2 className="text-lg font-semibold">Property Details</h2>
+              </div>
+              <div className="mt-5 grid gap-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Property Type</label>
+                    <select
+                      name="kind"
+                      value={draft.kind ?? "HOUSE"}
+                      onChange={(event) => updateDraftValue("kind", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent"
+                    >
+                      <option value="HOUSE">House</option>
+                      <option value="APARTMENT">Apartment</option>
+                      <option value="LAND">Land</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Listing Type</label>
+                    <select
+                      name="listingTerm"
+                      value={draft.listingTerm ?? "SALE"}
+                      onChange={(event) => updateDraftValue("listingTerm", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent"
+                    >
+                      <option value="SALE">For Sale</option>
+                      <option value="LEASE">For Lease</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Price (NGN)</label>
+                    <input
+                      name="price"
+                      type="number"
+                      min={1}
+                      required
+                      placeholder="0"
+                      value={draft.price ?? ""}
+                      onChange={(event) => updateDraftValue("price", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Area (sqft)</label>
+                    <input
+                      name="areaSqft"
+                      type="number"
+                      min={1}
+                      required
+                      placeholder="0"
+                      value={draft.areaSqft ?? ""}
+                      onChange={(event) => updateDraftValue("areaSqft", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Bedrooms</label>
+                    <input
+                      name="bedrooms"
+                      type="number"
+                      min={0}
+                      required
+                      placeholder="0"
+                      value={draft.bedrooms ?? ""}
+                      onChange={(event) => updateDraftValue("bedrooms", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Bathrooms</label>
+                    <input
+                      name="bathrooms"
+                      type="number"
+                      min={0}
+                      step="0.5"
+                      required
+                      placeholder="0"
+                      value={draft.bathrooms ?? ""}
+                      onChange={(event) => updateDraftValue("bathrooms", event.target.value)}
+                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                    />
+                  </div>
                 </div>
               </div>
-            ) : null}
-
-            <textarea
-              name="galleryUrls"
-              rows={4}
-              placeholder="Additional Gallery Image URLs (one per line)"
-              value={draft.galleryUrls ?? ""}
-              onChange={(event) => updateDraftValue("galleryUrls", event.target.value)}
-              className="rounded-xl border border-black/10 bg-white px-4 py-3"
-            />
-
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                name="featured"
-                type="checkbox"
-                checked={draft.featured === "on"}
-                onChange={(event) => updateDraftValue("featured", event.target.checked ? "on" : "")}
-                className="h-4 w-4"
-              />
-              Mark as featured
-            </label>
-
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={clearDraft}
-                className="rounded-full border border-black/15 px-4 py-2 text-xs font-semibold transition hover:bg-black/5"
-              >
-                Clear Draft
-              </button>
-              <p className="self-center text-xs text-muted">Draft is auto-saved on this browser.</p>
             </div>
 
-            <button
-              type="submit"
-              disabled={status.type === "loading"}
-              className="w-full rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60 sm:w-auto"
-            >
-              {status.type === "loading" ? "Publishing..." : "Publish Listing"}
-            </button>
+            {/* Media card */}
+            <div className="rounded-2xl border border-black/10 bg-surface p-5 shadow-sm sm:p-6">
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-sm font-bold text-accent">3</span>
+                <h2 className="text-lg font-semibold">Photos</h2>
+              </div>
+              <div className="mt-5 grid gap-4">
+                <label className="group cursor-pointer rounded-2xl border-2 border-dashed border-black/15 bg-white/80 p-6 text-center transition hover:border-accent/40 hover:bg-accent/[0.02]">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 transition group-hover:bg-accent/20">
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 text-accent" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" /></svg>
+                  </div>
+                  <p className="mt-3 text-sm font-semibold">Click to upload property image</p>
+                  <p className="mt-1 text-xs text-muted">JPG, PNG, WebP — max 5 MB</p>
+                  <input
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (!file) {
+                        setPreviewUrl(null);
+                        return;
+                      }
+                      const objectUrl = URL.createObjectURL(file);
+                      setPreviewUrl((prev) => {
+                        if (prev) URL.revokeObjectURL(prev);
+                        return objectUrl;
+                      });
+                    }}
+                  />
+                </label>
 
-            <TurnstileCaptcha onTokenChange={setCaptchaToken} />
-          </form>
-        )}
+                {previewUrl ? (
+                  <div className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
+                    <div className="relative h-52 w-full sm:h-64">
+                      <Image src={previewUrl} alt="Property preview" fill className="object-cover" sizes="100vw" unoptimized />
+                    </div>
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Image Preview</p>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewUrl(null)}
+                        className="text-xs font-semibold text-red-500 transition hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
 
-        {status.message ? (
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <p
-              className={`text-sm ${
-                status.type === "error" ? "text-red-600" : "text-accent"
-              }`}
-            >
-              {status.message}
-            </p>
-            {status.type === "success" ? (
-              <Link href="/my-listings" className="text-sm font-semibold text-accent underline">
-                Manage this listing
-              </Link>
-            ) : null}
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">Gallery URLs (optional)</label>
+                  <textarea
+                    name="galleryUrls"
+                    rows={3}
+                    placeholder="Paste additional image URLs, one per line"
+                    value={draft.galleryUrls ?? ""}
+                    onChange={(event) => updateDraftValue("galleryUrls", event.target.value)}
+                    className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-1 focus:ring-accent/30"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        ) : null}
-        </div>
-      </section>
+
+          {/* Right column — sidebar */}
+          <div className="md:sticky md:top-24 md:self-start">
+            <div className="grid gap-5">
+              {/* Summary card */}
+              <div className="rounded-2xl border border-black/10 bg-surface p-5 shadow-sm">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">Listing Summary</h3>
+                <div className="mt-4 grid gap-3 text-sm">
+                  <div className="flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2">
+                    <span className="text-muted">Type</span>
+                    <span className="font-semibold">{draft.kind === "LAND" ? "Land" : draft.kind === "APARTMENT" ? "Apartment" : "House"}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2">
+                    <span className="text-muted">Listing</span>
+                    <span className="font-semibold">{draft.listingTerm === "LEASE" ? "For Lease" : "For Sale"}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2">
+                    <span className="text-muted">City</span>
+                    <span className="font-semibold">{draft.city || "—"}</span>
+                  </div>
+                  {draft.price ? (
+                    <div className="flex items-center justify-between rounded-xl bg-accent/5 px-3 py-2">
+                      <span className="text-muted">Price</span>
+                      <span className="font-bold text-accent">
+                        {new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(Number(draft.price) || 0)}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* Options card */}
+              <div className="rounded-2xl border border-black/10 bg-surface p-5 shadow-sm">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted">Options</h3>
+                <label className="mt-4 flex items-center gap-3 rounded-xl bg-black/[0.03] px-4 py-3 text-sm transition hover:bg-black/[0.05]">
+                  <input
+                    name="featured"
+                    type="checkbox"
+                    checked={draft.featured === "on"}
+                    onChange={(event) => updateDraftValue("featured", event.target.checked ? "on" : "")}
+                    className="h-4 w-4 rounded border-black/20 text-accent accent-accent"
+                  />
+                  <div>
+                    <p className="font-semibold">Featured listing</p>
+                    <p className="text-xs text-muted">Boost visibility on the homepage</p>
+                  </div>
+                </label>
+              </div>
+
+              {/* Actions card */}
+              <div className="rounded-2xl border border-black/10 bg-surface p-5 shadow-sm">
+                <button
+                  type="submit"
+                  disabled={status.type === "loading"}
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60"
+                >
+                  {status.type === "loading" ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Publishing...
+                    </>
+                  ) : (
+                    "Publish Listing"
+                  )}
+                </button>
+                <div className="mt-3 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={clearDraft}
+                    className="text-xs font-semibold text-muted transition hover:text-black"
+                  >
+                    Clear Draft
+                  </button>
+                  <span className="text-xs text-muted">Auto-saved</span>
+                </div>
+
+                <TurnstileCaptcha onTokenChange={setCaptchaToken} />
+              </div>
+
+              {/* Status message */}
+              {status.message ? (
+                <div className={`rounded-2xl border p-4 shadow-sm ${status.type === "error" ? "border-red-200 bg-red-50" : "border-emerald-200 bg-emerald-50"}`}>
+                  <p className={`text-sm font-medium ${status.type === "error" ? "text-red-700" : "text-emerald-700"}`}>
+                    {status.message}
+                  </p>
+                  {status.type === "success" ? (
+                    <Link href="/my-listings" className="mt-2 inline-block text-sm font-semibold text-accent underline">
+                      View your listings &rarr;
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </form>
+      )}
     </main>
   );
 }

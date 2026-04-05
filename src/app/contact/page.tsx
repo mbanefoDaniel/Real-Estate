@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Contact | NaijaProperty Hub",
+  title: "Contact | Christoland",
 };
 
 export default function ContactPage() {

@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     const dataUri = `data:${file.type};base64,${buffer.toString("base64")}`;
 
     const result = await cloudinary.uploader.upload(dataUri, {
-      folder: "naijapropertyhub",
+      folder: "christoland",
       resource_type: "image",
       transformation: [
         {
