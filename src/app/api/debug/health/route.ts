@@ -18,8 +18,6 @@ export async function GET(request: NextRequest) {
   const cookieName = getAuthCookieName();
   const cookieValue = request.cookies.get(cookieName)?.value;
   const hasCookie = Boolean(cookieValue);
-
-  // List all cookie names the browser sent
   const allCookieNames = Array.from(request.cookies.getAll()).map(c => c.name);
 
   let sessionUser = null;
@@ -34,7 +32,6 @@ export async function GET(request: NextRequest) {
     authError = e instanceof Error ? e.message : String(e);
   }
 
-  // Test JWT directly
   let jwtTest = null;
   try {
     const jwt = await import("jsonwebtoken");
@@ -54,7 +51,8 @@ export async function GET(request: NextRequest) {
     dbStatus = `error: ${e instanceof Error ? e.message : String(e)}`;
   }
 
-  return NextResponse.json({
+  // Set a test cookie to verify Set-Cookie headers work on Vercel
+  const response = NextResponse.json({
     env: envCheck,
     auth: {
       cookieName,
@@ -66,6 +64,18 @@ export async function GET(request: NextRequest) {
     },
     jwt: jwtTest,
     db: dbStatus,
+    testCookie: "A test cookie 'debug_test' was set. Refresh this page — if allCookieNames still shows empty, cookies are blocked by your browser for this domain.",
     timestamp: new Date().toISOString(),
   });
+
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  response.cookies.set("debug_test", "hello", {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 3600,
+  });
+
+  return response;
 }
