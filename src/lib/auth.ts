@@ -72,6 +72,40 @@ export function getSessionTtlSeconds() {
   return SESSION_TTL_SECONDS;
 }
 
+/**
+ * Build a raw Set-Cookie header value for the auth token.
+ * Bypasses Next.js response.cookies.set() which can silently fail
+ * on some hosting platforms when multiple cookies are set.
+ */
+export function buildAuthSetCookieHeader(token: string) {
+  const isProduction = process.env.NODE_ENV === "production";
+  const parts = [
+    `${AUTH_COOKIE_NAME}=${token}`,
+    "HttpOnly",
+    "SameSite=Lax",
+    `Path=/`,
+    `Max-Age=${SESSION_TTL_SECONDS}`,
+  ];
+  if (isProduction) parts.push("Secure");
+  return parts.join("; ");
+}
+
+/**
+ * Build a raw Set-Cookie header that clears the auth cookie.
+ */
+export function buildAuthClearCookieHeader() {
+  const isProduction = process.env.NODE_ENV === "production";
+  const parts = [
+    `${AUTH_COOKIE_NAME}=`,
+    "HttpOnly",
+    "SameSite=Lax",
+    `Path=/`,
+    `Max-Age=0`,
+  ];
+  if (isProduction) parts.push("Secure");
+  return parts.join("; ");
+}
+
 export function getInactivityTimeoutMs() {
   return INACTIVITY_TIMEOUT_MS;
 }

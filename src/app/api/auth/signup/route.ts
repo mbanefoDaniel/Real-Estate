@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { createSessionToken, getAuthCookieName, getSessionTtlSeconds } from "@/lib/auth";
+import { createSessionToken, buildAuthSetCookieHeader } from "@/lib/auth";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { verifyCaptchaToken } from "@/lib/captcha";
 
@@ -85,13 +85,7 @@ export async function POST(request: NextRequest) {
     const token = createSessionToken(user);
     const response = NextResponse.json(user, { status: 201 });
 
-    response.cookies.set(getAuthCookieName(), token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: getSessionTtlSeconds(),
-    });
+    response.headers.append("Set-Cookie", buildAuthSetCookieHeader(token));
 
     return response;
   } catch {

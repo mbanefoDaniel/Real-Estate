@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-import { getAuthCookieName } from "@/lib/auth";
+import { buildAuthClearCookieHeader } from "@/lib/auth";
 
 function clearAuthCookie(response: NextResponse) {
-  response.cookies.set(getAuthCookieName(), "", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
-
+  response.headers.append("Set-Cookie", buildAuthClearCookieHeader());
   return response;
 }
 

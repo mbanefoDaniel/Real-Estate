@@ -5,8 +5,7 @@ export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import {
   createSessionToken,
-  getAuthCookieName,
-  getSessionTtlSeconds,
+  buildAuthSetCookieHeader,
   getSessionUserFromRequest,
 } from "@/lib/auth";
 
@@ -125,13 +124,7 @@ export async function PATCH(request: NextRequest) {
     const token = createSessionToken(updatedUser);
     const response = NextResponse.json({ user: updatedUser });
 
-    response.cookies.set(getAuthCookieName(), token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: getSessionTtlSeconds(),
-    });
+    response.headers.append("Set-Cookie", buildAuthSetCookieHeader(token));
 
     return response;
   } catch {

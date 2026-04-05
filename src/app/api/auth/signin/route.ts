@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { createSessionToken, getAuthCookieName, getSessionTtlSeconds } from "@/lib/auth";
+import { createSessionToken, getAuthCookieName, getSessionTtlSeconds, buildAuthSetCookieHeader } from "@/lib/auth";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { verifyCaptchaToken } from "@/lib/captcha";
 
@@ -79,23 +79,7 @@ export async function POST(request: NextRequest) {
       role: user.role,
     });
 
-    response.cookies.set(getAuthCookieName(), token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: getSessionTtlSeconds(),
-    });
-
-    // Debug: also set a readable test cookie so the client can confirm
-    // Set-Cookie headers survive the Vercel response
-    response.cookies.set("signin_debug", "1", {
-      httpOnly: false,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 300,
-    });
+    response.headers.append("Set-Cookie", buildAuthSetCookieHeader(token));
 
     return response;
   } catch {

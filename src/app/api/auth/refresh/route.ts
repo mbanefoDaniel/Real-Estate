@@ -4,8 +4,7 @@ export const dynamic = "force-dynamic";
 import {
   getSessionUserFromRequest,
   createSessionToken,
-  getAuthCookieName,
-  getSessionTtlSeconds,
+  buildAuthSetCookieHeader,
 } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
@@ -23,13 +22,7 @@ export async function POST(request: NextRequest) {
 
   const response = NextResponse.json({ refreshed: true });
 
-  response.cookies.set(getAuthCookieName(), token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: getSessionTtlSeconds(),
-  });
+  response.headers.append("Set-Cookie", buildAuthSetCookieHeader(token));
 
   return response;
 }
