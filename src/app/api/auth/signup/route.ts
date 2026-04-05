@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: getSessionTtlSeconds(),
+      // No maxAge — session cookie is cleared when browser closes
     });
 
     return response;
