@@ -3,11 +3,20 @@ import { getSessionUserFromRequest } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getUserComplianceStatus } from "@/lib/compliance";
 
+export const dynamic = "force-dynamic";
+
+function noCacheJson(data: unknown, status = 200) {
+  const res = NextResponse.json(data, { status });
+  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.headers.set("Pragma", "no-cache");
+  return res;
+}
+
 export async function GET(request: NextRequest) {
   const sessionUser = getSessionUserFromRequest(request);
 
   if (!sessionUser) {
-    return NextResponse.json({ user: null }, { status: 200 });
+    return noCacheJson({ user: null });
   }
 
   try {
@@ -28,15 +37,14 @@ export async function GET(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ user: null }, { status: 200 });
+      return noCacheJson({ user: null });
     }
 
     const compliance = await getUserComplianceStatus(user.id);
 
-    return NextResponse.json({ user, compliance }, { status: 200 });
+    return noCacheJson({ user, compliance });
   } catch {
-    // DB unavailable but JWT is valid — return minimal user from token
-    return NextResponse.json({
+    return noCacheJson({
       user: {
         id: sessionUser.id,
         email: sessionUser.email,
@@ -49,6 +57,6 @@ export async function GET(request: NextRequest) {
         kycSubmittedAt: null,
         kycVerifiedAt: null,
       },
-    }, { status: 200 });
+    });
   }
 }

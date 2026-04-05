@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUserFromRequest } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 function parseRequiredString(value: unknown) {
   if (typeof value !== "string") {
     return null;
