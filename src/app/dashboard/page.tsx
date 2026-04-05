@@ -151,7 +151,8 @@ export default function ProfileDashboardPage() {
            stale due to Next.js Router Cache preserving a previous
            server-rendered layout. */
         if (!currentUser) {
-          setStatus({ type: "error", message: "Your session has expired. Please sign in again." });
+          const debug = meData?._debug ? JSON.stringify(meData._debug) : "no debug";
+          setStatus({ type: "error", message: `Your session has expired. Please sign in again. [Debug: ${debug}]` });
           return;
         }
 

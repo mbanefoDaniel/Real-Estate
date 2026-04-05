@@ -13,10 +13,20 @@ function noCacheJson(data: unknown, status = 200) {
 }
 
 export async function GET(request: NextRequest) {
+  const cookieValue = request.cookies.get("nph_auth")?.value;
+  const allCookieNames = request.cookies.getAll().map((c) => c.name);
   const sessionUser = getSessionUserFromRequest(request);
 
   if (!sessionUser) {
-    return noCacheJson({ user: null });
+    return noCacheJson({
+      user: null,
+      _debug: {
+        hasCookie: Boolean(cookieValue),
+        cookieLength: cookieValue?.length ?? 0,
+        allCookies: allCookieNames,
+        tokenPreview: cookieValue ? cookieValue.slice(0, 20) + "..." : null,
+      },
+    });
   }
 
   try {

@@ -35,6 +35,8 @@ export default function SavedSearchesPage() {
   const [authReady, setAuthReady] = useState(false);
   const [signedIn, setSignedIn] = useState(Boolean(authUser));
 
+  const [debugInfo, setDebugInfo] = useState("");
+
   async function loadSavedSearches() {
     setLoading(true);
     const response = await fetch("/api/saved-searches", { cache: "no-store", credentials: "include" });
@@ -69,6 +71,9 @@ export default function SavedSearchesPage() {
         const res = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = await res.json();
         verifiedEmail = data?.user?.email ?? "";
+        if (!verifiedEmail && data?._debug) {
+          setDebugInfo(JSON.stringify(data._debug));
+        }
       } catch { /* ignore */ }
 
       if (cancelled) return;
@@ -171,6 +176,7 @@ export default function SavedSearchesPage() {
         <section className="mt-6 rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-black/5">
           <h2 className="text-lg font-semibold">Sign In Required</h2>
           <p className="mt-2 text-sm text-muted">Sign in to view and manage your saved searches.</p>
+          {debugInfo && <p className="mt-1 text-xs text-red-500 break-all">Debug: {debugInfo}</p>}
           <div className="mt-4 flex gap-2">
             <Link
               href="/auth/sign-in"
