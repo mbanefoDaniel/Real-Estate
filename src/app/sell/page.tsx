@@ -59,18 +59,17 @@ export default function SellPage() {
     let cancelled = false;
 
     async function bootstrap() {
-      /* 1. Resolve the authenticated user */
-      let email = sessionUser?.email ?? "";
-      let role = sessionUser?.role ?? "USER";
+      /* 1. Resolve the authenticated user — always verify via
+         /api/auth/me so stale Router Cache context cannot trick us. */
+      let email = "";
+      let role: "USER" | "ADMIN" = "USER";
 
-      if (!email) {
-        try {
-          const meRes = await fetch("/api/auth/me", { cache: "no-store" });
-          const meData = await meRes.json();
-          email = meData?.user?.email ?? "";
-          role = meData?.user?.role ?? "USER";
-        } catch { /* ignore */ }
-      }
+      try {
+        const meRes = await fetch("/api/auth/me", { cache: "no-store" });
+        const meData = await meRes.json();
+        email = meData?.user?.email ?? "";
+        role = meData?.user?.role === "ADMIN" ? "ADMIN" : "USER";
+      } catch { /* ignore */ }
 
       if (cancelled) return;
 

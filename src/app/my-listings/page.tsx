@@ -129,16 +129,16 @@ export default function MyListingsPage() {
 
   useEffect(() => {
     async function bootstrapAuth() {
-      let email = authUser?.email ?? "";
+      /* Always verify via /api/auth/me so stale Router Cache
+         context cannot trick us into thinking we're signed in. */
+      let email = "";
 
-      if (!email) {
-        try {
-          const response = await fetch("/api/auth/me", { cache: "no-store" });
-          const data = await response.json();
-          email = data?.user?.email ?? "";
-        } catch {
-          // fall through
-        }
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        const data = await response.json();
+        email = data?.user?.email ?? "";
+      } catch {
+        // fall through
       }
 
       if (email) {

@@ -39,6 +39,11 @@ export default function SavedSearchesPage() {
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        setSignedIn(false);
+        setLoading(false);
+        return;
+      }
       setStatus({ type: "error", message: data?.error || "Unable to load saved searches." });
       setItems([]);
       setLoading(false);
@@ -53,21 +58,20 @@ export default function SavedSearchesPage() {
     let cancelled = false;
 
     async function bootstrap() {
-      let hasUser = Boolean(authUser);
+      /* Always verify the real session via /api/auth/me.
+         Don't trust authUser from React context — it may be stale
+         due to Next.js Router Cache preserving a previous layout. */
+      let verifiedEmail = "";
 
-      /* If the context user is not yet available (common on mobile),
-         fall back to the /api/auth/me endpoint which reads the cookie
-         server-side. */
-      if (!hasUser) {
-        try {
-          const res = await fetch("/api/auth/me", { cache: "no-store" });
-          const data = await res.json();
-          hasUser = Boolean(data?.user?.email);
-        } catch { /* ignore */ }
-      }
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        const data = await res.json();
+        verifiedEmail = data?.user?.email ?? "";
+      } catch { /* ignore */ }
 
       if (cancelled) return;
 
+      const hasUser = Boolean(verifiedEmail);
       setSignedIn(hasUser);
 
       if (hasUser) {

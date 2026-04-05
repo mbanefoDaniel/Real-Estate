@@ -146,21 +146,19 @@ export default function ProfileDashboardPage() {
           return;
         }
 
-        if (!currentUser && !authUser) {
-          setStatus({ type: "error", message: "Sign in to access your profile dashboard." });
+        /* If /api/auth/me returns no user the real session is expired.
+           Don't trust the cached authUser from React context — it may be
+           stale due to Next.js Router Cache preserving a previous
+           server-rendered layout. */
+        if (!currentUser) {
+          setStatus({ type: "error", message: "Your session has expired. Please sign in again." });
           return;
         }
 
-        const resolvedUser = currentUser ?? (authUser ? { ...authUser, createdAt: undefined, profileImageUrl: null, kycStatus: "NOT_SUBMITTED" as const } : null);
-        if (!resolvedUser) {
-          setStatus({ type: "error", message: "Sign in to access your profile dashboard." });
-          return;
-        }
+        setUser(currentUser);
+        setDisplayName(currentUser.name ?? "");
 
-        setUser(resolvedUser);
-        setDisplayName(resolvedUser.name ?? "");
-
-        if (resolvedUser.role === "USER") {
+        if (currentUser.role === "USER") {
           try {
             const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store" });
             if (subscriptionResponse.ok) {
@@ -178,7 +176,7 @@ export default function ProfileDashboardPage() {
 
         try {
           const [listingsResponse, savedSearchesResponse] = await Promise.all([
-            fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(resolvedUser.email)}`, { cache: "no-store" }),
+            fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(currentUser.email)}`, { cache: "no-store" }),
             fetch("/api/saved-searches", { cache: "no-store" }),
           ]);
 

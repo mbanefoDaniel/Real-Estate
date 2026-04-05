@@ -255,24 +255,53 @@ export default function TopNav({ initialUser }: TopNavProps) {
   const desktopRef = useRef<HTMLDivElement>(null);
   const mobileRef = useRef<HTMLDivElement>(null);
 
-  /* fetch profile image from /api/auth/me */
+  /* fetch profile image and subscription status from /api/auth/me */
   useEffect(() => {
     let mounted = true;
     if (!sessionUser) return;
 
-    async function loadProfile() {
+    async function loadProfileAndSubscription() {
       try {
         const res = await fetch("/api/auth/me", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = await res.json();
-        const url = data?.user?.profileImageUrl;
-        if (mounted && typeof url === "string" && url.trim()) {
+        const data = res.ok ? await res.json() : null;
+        const meUser = data?.user;
+
+        if (!mounted) return;
+
+        /* If /api/auth/me says no user, the session cookie is
+           expired or missing — don't trust the stale sessionUser. */
+        if (!meUser) {
+          setSubscriptionBadge(sessionUser.role === "USER" ? "INACTIVE" : null);
+          return;
+        }
+
+        const url = meUser.profileImageUrl;
+        if (typeof url === "string" && url.trim()) {
           setProfileImageUrl(url.trim());
         }
-      } catch { /* ignore */ }
+
+        /* Load subscription only after verifying the session is valid */
+        if (sessionUser.role === "USER") {
+          try {
+            const subRes = await fetch("/api/subscription/status", { cache: "no-store" });
+            if (!subRes.ok) {
+              if (mounted) setSubscriptionBadge("INACTIVE");
+              return;
+            }
+            const subData = (await subRes.json()) as { active?: boolean };
+            if (mounted) setSubscriptionBadge(subData.active ? "ACTIVE" : "INACTIVE");
+          } catch {
+            if (mounted) setSubscriptionBadge("INACTIVE");
+          }
+        }
+      } catch {
+        if (mounted && sessionUser.role === "USER") {
+          setSubscriptionBadge("INACTIVE");
+        }
+      }
     }
 
-    void loadProfile();
+    void loadProfileAndSubscription();
     return () => { mounted = false; };
   }, [sessionUser]);
 
@@ -298,32 +327,6 @@ export default function TopNav({ initialUser }: TopNavProps) {
     setMobileOpen(false);
     setDesktopOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadSubscriptionStatus() {
-      if (!sessionUser || sessionUser.role !== "USER") {
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/subscription/status", { cache: "no-store" });
-        if (!response.ok) {
-          if (mounted) setSubscriptionBadge("INACTIVE");
-          return;
-        }
-
-        const data = (await response.json()) as { active?: boolean };
-        if (mounted) setSubscriptionBadge(data.active ? "ACTIVE" : "INACTIVE");
-      } catch {
-        if (mounted) setSubscriptionBadge("INACTIVE");
-      }
-    }
-
-    void loadSubscriptionStatus();
-    return () => { mounted = false; };
-  }, [sessionUser]);
 
   function closeMobile() { setMobileOpen(false); }
   function closeDesktop() { setDesktopOpen(false); }

@@ -4,13 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { getUserComplianceStatus } from "@/lib/compliance";
 
 export async function GET(request: NextRequest) {
+  const sessionUser = getSessionUserFromRequest(request);
+
+  if (!sessionUser) {
+    return NextResponse.json({ user: null }, { status: 200 });
+  }
+
   try {
-    const sessionUser = getSessionUserFromRequest(request);
-
-    if (!sessionUser) {
-      return NextResponse.json({ user: null }, { status: 200 });
-    }
-
     const user = await prisma.user.findUnique({
       where: { id: sessionUser.id },
       select: {
@@ -35,6 +35,20 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ user, compliance }, { status: 200 });
   } catch {
-    return NextResponse.json({ user: null }, { status: 200 });
+    // DB unavailable but JWT is valid — return minimal user from token
+    return NextResponse.json({
+      user: {
+        id: sessionUser.id,
+        email: sessionUser.email,
+        role: sessionUser.role,
+        name: sessionUser.name ?? null,
+        createdAt: null,
+        profileImageUrl: null,
+        kycStatus: null,
+        kycDocumentUrl: null,
+        kycSubmittedAt: null,
+        kycVerifiedAt: null,
+      },
+    }, { status: 200 });
   }
 }

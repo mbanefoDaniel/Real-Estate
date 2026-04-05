@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cloudinary } from "@/lib/cloudinary";
 import { logError } from "@/lib/logger";
+import { getSessionUserFromRequest } from "@/lib/auth";
 
 export const config = {
   api: { bodyParser: { sizeLimit: "6mb" } },
@@ -10,6 +11,11 @@ const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   try {
+    const sessionUser = getSessionUserFromRequest(request);
+    if (!sessionUser) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
     const cloudinarySecret = process.env.CLOUDINARY_API_SECRET;
 
     if (
