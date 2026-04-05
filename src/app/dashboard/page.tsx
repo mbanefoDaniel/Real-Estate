@@ -98,7 +98,7 @@ export default function ProfileDashboardPage() {
         }
 
         const [listingsResponse, savedSearchesResponse] = await Promise.all([
-          fetch("/api/properties?includeAll=true", { cache: "no-store" }),
+          fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(resolvedUser.email)}`, { cache: "no-store" }),
           fetch("/api/saved-searches", { cache: "no-store" }),
         ]);
 

@@ -91,7 +91,7 @@ export default function MyListingsPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/properties?includeAll=true`, {
+      const response = await fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(value)}`, {
         cache: "no-store",
       });
       const data = await response.json();

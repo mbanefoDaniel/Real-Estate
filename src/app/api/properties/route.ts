@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
     const requestedOwnerEmail = ownerEmailParam?.toLowerCase() ?? null;
     const sessionOwnerEmail = sessionUser?.email?.toLowerCase() ?? null;
     const ownerEmail = isAdmin
-      ? requestedOwnerEmail ?? sessionOwnerEmail
+      ? requestedOwnerEmail
       : sessionOwnerEmail;
 
     if (includeAllParam === "true" && !sessionUser) {
