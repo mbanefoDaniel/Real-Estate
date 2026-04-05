@@ -87,6 +87,16 @@ export async function POST(request: NextRequest) {
       maxAge: getSessionTtlSeconds(),
     });
 
+    // Debug: also set a readable test cookie so the client can confirm
+    // Set-Cookie headers survive the Vercel response
+    response.cookies.set("signin_debug", "1", {
+      httpOnly: false,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 300,
+    });
+
     return response;
   } catch {
     return NextResponse.json(

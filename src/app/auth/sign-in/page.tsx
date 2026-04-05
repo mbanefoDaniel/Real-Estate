@@ -61,6 +61,31 @@ export default function SignInPage() {
         return;
       }
 
+      setStatus({ type: "success", message: "Signed in. Verifying cookie..." });
+
+      // Debug: verify the cookie was actually set before redirecting
+      const debugCookie = document.cookie.includes("signin_debug");
+      try {
+        const verifyRes = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+        const verifyData = await verifyRes.json();
+        const hasUser = Boolean(verifyData?.user);
+        const debug = verifyData?._debug ? JSON.stringify(verifyData._debug) : "n/a";
+
+        if (!hasUser) {
+          setStatus({
+            type: "error",
+            message: `Sign-in succeeded but cookie verification failed. debugCookie=${debugCookie}, meResponse=${debug}`,
+          });
+          return;
+        }
+      } catch (verifyErr) {
+        setStatus({
+          type: "error",
+          message: `Sign-in succeeded but verification fetch failed: ${verifyErr}`,
+        });
+        return;
+      }
+
       setStatus({ type: "success", message: "Signed in. Redirecting..." });
       const role = result?.role;
       let destination = "/my-listings";
