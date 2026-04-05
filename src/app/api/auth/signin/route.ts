@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
       name: user.name,
       email: user.email,
       role: user.role,
+      token,
     });
 
     const setCookieHeader = buildAuthSetCookieHeader(token);
@@ -86,8 +87,6 @@ export async function POST(request: NextRequest) {
       headers: [
         ["Content-Type", "application/json"],
         ["Set-Cookie", setCookieHeader],
-        ["Set-Cookie", "signin_test=ok; Path=/; Max-Age=300; SameSite=Lax"],
-        ["X-Debug-Cookie-Length", String(setCookieHeader.length)],
       ],
     });
   } catch {

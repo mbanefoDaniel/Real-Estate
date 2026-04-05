@@ -63,6 +63,7 @@ export default function SignInPage() {
 
       setStatus({ type: "success", message: "Signed in. Redirecting..." });
       const role = result?.role;
+      const token = result?.token;
       let destination = "/my-listings";
 
       if (role === "ADMIN") {
@@ -71,8 +72,13 @@ export default function SignInPage() {
         destination = nextPath;
       }
 
-      // Force a full reload so auth-gated UI state updates immediately after login.
-      window.location.assign(destination);
+      // Navigate via /api/auth/establish which sets the cookie via a
+      // direct page response (more reliable than fetch Set-Cookie).
+      if (token) {
+        window.location.href = `/api/auth/establish?token=${encodeURIComponent(token)}&next=${encodeURIComponent(destination)}`;
+      } else {
+        window.location.assign(destination);
+      }
     } catch {
       setStatus({ type: "error", message: "Network error while signing in." });
     }

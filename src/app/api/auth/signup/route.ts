@@ -83,11 +83,14 @@ export async function POST(request: NextRequest) {
     });
 
     const token = createSessionToken(user);
-    const response = NextResponse.json(user, { status: 201 });
 
-    response.headers.append("Set-Cookie", buildAuthSetCookieHeader(token));
-
-    return response;
+    return new Response(JSON.stringify({ ...user, token }), {
+      status: 201,
+      headers: [
+        ["Content-Type", "application/json"],
+        ["Set-Cookie", buildAuthSetCookieHeader(token)],
+      ],
+    });
   } catch {
     return NextResponse.json(
       { error: "Unable to create account." },

@@ -63,8 +63,13 @@ export default function SignUpPage() {
       }
 
       setStatus({ type: "success", message: "Account created. Redirecting..." });
-      router.push("/sell");
-      router.refresh();
+      const token = result?.token;
+      if (token) {
+        window.location.href = `/api/auth/establish?token=${encodeURIComponent(token)}&next=${encodeURIComponent("/sell")}`;
+      } else {
+        router.push("/sell");
+        router.refresh();
+      }
     } catch {
       setStatus({ type: "error", message: "Network error while creating account." });
     }
