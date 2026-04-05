@@ -30,7 +30,7 @@ export default function SavedSearchesPage() {
   const [items, setItems] = useState<SavedSearch[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<Status>({ type: "idle", message: "" });
-  const [authReady, setAuthReady] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
   const [signedIn, setSignedIn] = useState(Boolean(authUser));
 
   async function loadSavedSearches() {
@@ -50,18 +50,38 @@ export default function SavedSearchesPage() {
   }
 
   useEffect(() => {
+    let cancelled = false;
+
     async function bootstrap() {
-      if (authUser) {
-        setSignedIn(true);
+      let hasUser = Boolean(authUser);
+
+      /* If the context user is not yet available (common on mobile),
+         fall back to the /api/auth/me endpoint which reads the cookie
+         server-side. */
+      if (!hasUser) {
+        try {
+          const res = await fetch("/api/auth/me", { cache: "no-store" });
+          const data = await res.json();
+          hasUser = Boolean(data?.user?.email);
+        } catch { /* ignore */ }
+      }
+
+      if (cancelled) return;
+
+      setSignedIn(hasUser);
+
+      if (hasUser) {
         await loadSavedSearches();
       } else {
-        setSignedIn(false);
         setLoading(false);
       }
+
       setAuthReady(true);
     }
 
     bootstrap();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser]);
 
   async function toggleAlert(item: SavedSearch, alertEnabled: boolean) {

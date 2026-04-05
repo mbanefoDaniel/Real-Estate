@@ -158,9 +158,9 @@ export default function ProfileDashboardPage() {
         }
 
         setUser(resolvedUser);
-        setDisplayName(currentUser.name ?? "");
+        setDisplayName(resolvedUser.name ?? "");
 
-        if (currentUser.role === "USER") {
+        if (resolvedUser.role === "USER") {
           try {
             const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store" });
             if (subscriptionResponse.ok) {
@@ -176,20 +176,23 @@ export default function ProfileDashboardPage() {
           }
         }
 
-        const [listingsResponse, savedSearchesResponse] = await Promise.all([
-          fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(resolvedUser.email)}`, { cache: "no-store" }),
-          fetch("/api/saved-searches", { cache: "no-store" }),
-        ]);
+        try {
+          const [listingsResponse, savedSearchesResponse] = await Promise.all([
+            fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(resolvedUser.email)}`, { cache: "no-store" }),
+            fetch("/api/saved-searches", { cache: "no-store" }),
+          ]);
 
-        const listingsData = await listingsResponse.json();
-        const savedSearchesData = await savedSearchesResponse.json();
+          const listingsData = listingsResponse.ok ? await listingsResponse.json() : [];
+          const savedSearchesData = savedSearchesResponse.ok ? await savedSearchesResponse.json() : [];
 
-        if (!active) {
-          return;
+          if (!active) return;
+
+          setListingCount(Array.isArray(listingsData) ? listingsData.length : 0);
+          setSavedSearchCount(Array.isArray(savedSearchesData) ? savedSearchesData.length : 0);
+        } catch {
+          // Stats fetches failed — show dashboard anyway with zero counts
         }
 
-        setListingCount(Array.isArray(listingsData) ? listingsData.length : 0);
-        setSavedSearchCount(Array.isArray(savedSearchesData) ? savedSearchesData.length : 0);
         setStatus({ type: "idle", message: "" });
       } catch {
         if (!active) {
