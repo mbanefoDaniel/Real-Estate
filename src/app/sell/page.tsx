@@ -65,7 +65,7 @@ export default function SellPage() {
       let role: "USER" | "ADMIN" = "USER";
 
       try {
-        const meRes = await fetch("/api/auth/me", { cache: "no-store" });
+        const meRes = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const meData = await meRes.json();
         email = meData?.user?.email ?? "";
         role = meData?.user?.role === "ADMIN" ? "ADMIN" : "USER";
@@ -86,7 +86,7 @@ export default function SellPage() {
       }
 
       try {
-        const subRes = await fetch("/api/subscription/status", { cache: "no-store" });
+        const subRes = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
         if (cancelled) return;
         if (subRes.ok) {
           const subData = await subRes.json();

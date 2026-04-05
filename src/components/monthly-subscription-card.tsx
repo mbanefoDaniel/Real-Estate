@@ -45,7 +45,7 @@ export default function MonthlySubscriptionCard({ priceNgn, className }: Monthly
   useEffect(() => {
     async function loadStatus() {
       try {
-        const response = await fetch("/api/subscription/status", { cache: "no-store" });
+        const response = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
         if (!response.ok) {
           setCheckedStatus(true);
           return;

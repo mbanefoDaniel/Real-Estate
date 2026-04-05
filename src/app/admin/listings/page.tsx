@@ -51,7 +51,7 @@ export default function AdminListingsPage() {
   });
 
   async function loadCurrentUser() {
-    const response = await fetch("/api/auth/me", { cache: "no-store" });
+    const response = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
     const data = await response.json();
     const admin = data?.user?.role === "ADMIN";
     setIsAdmin(admin);

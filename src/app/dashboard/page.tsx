@@ -138,7 +138,7 @@ export default function ProfileDashboardPage() {
 
     async function loadDashboard() {
       try {
-        const meResponse = await fetch("/api/auth/me", { cache: "no-store" });
+        const meResponse = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const meData = await meResponse.json();
         const currentUser = meData?.user ?? null;
 
@@ -160,7 +160,7 @@ export default function ProfileDashboardPage() {
 
         if (currentUser.role === "USER") {
           try {
-            const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store" });
+            const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
             if (subscriptionResponse.ok) {
               const subscriptionData = await subscriptionResponse.json();
               setSubscriptionState({
@@ -176,8 +176,8 @@ export default function ProfileDashboardPage() {
 
         try {
           const [listingsResponse, savedSearchesResponse] = await Promise.all([
-            fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(currentUser.email)}`, { cache: "no-store" }),
-            fetch("/api/saved-searches", { cache: "no-store" }),
+            fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(currentUser.email)}`, { cache: "no-store", credentials: "include" }),
+            fetch("/api/saved-searches", { cache: "no-store", credentials: "include" }),
           ]);
 
           const listingsData = listingsResponse.ok ? await listingsResponse.json() : [];

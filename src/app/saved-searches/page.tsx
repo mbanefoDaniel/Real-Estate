@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth-provider";
@@ -35,7 +37,7 @@ export default function SavedSearchesPage() {
 
   async function loadSavedSearches() {
     setLoading(true);
-    const response = await fetch("/api/saved-searches", { cache: "no-store" });
+    const response = await fetch("/api/saved-searches", { cache: "no-store", credentials: "include" });
     const data = await response.json();
 
     if (!response.ok) {
@@ -64,7 +66,7 @@ export default function SavedSearchesPage() {
       let verifiedEmail = "";
 
       try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        const res = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = await res.json();
         verifiedEmail = data?.user?.email ?? "";
       } catch { /* ignore */ }

@@ -120,7 +120,7 @@ export default function MyListingsPage() {
   }
 
   async function loadAnalytics() {
-    const response = await fetch("/api/owner/analytics", { cache: "no-store" });
+    const response = await fetch("/api/owner/analytics", { cache: "no-store", credentials: "include" });
     const data = await response.json();
     if (response.ok) {
       setAnalytics(data as OwnerAnalytics);
@@ -134,7 +134,7 @@ export default function MyListingsPage() {
       let email = "";
 
       try {
-        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        const response = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = await response.json();
         email = data?.user?.email ?? "";
       } catch {

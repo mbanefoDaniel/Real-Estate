@@ -262,7 +262,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
 
     async function loadProfileAndSubscription() {
       try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        const res = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = res.ok ? await res.json() : null;
         const meUser = data?.user;
 
@@ -283,7 +283,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
         /* Load subscription only after verifying the session is valid */
         if (sessionUser?.role === "USER") {
           try {
-            const subRes = await fetch("/api/subscription/status", { cache: "no-store" });
+            const subRes = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
             if (!subRes.ok) {
               if (mounted) setSubscriptionBadge("INACTIVE");
               return;
