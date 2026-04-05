@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { authFetch } from "@/lib/auth-fetch";
 
 type LeadItem = {
   id: string;
@@ -48,7 +49,7 @@ export default function AdminLeadsPage() {
   });
 
   async function loadCurrentUser() {
-    const response = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+    const response = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
     const data = await response.json();
     const admin = data?.user?.role === "ADMIN";
     setIsAdmin(admin);
@@ -79,7 +80,7 @@ export default function AdminLeadsPage() {
       params.set("status", filter);
     }
 
-    const response = await fetch(`/api/leads?${params.toString()}`, { cache: "no-store" });
+    const response = await authFetch(`/api/leads?${params.toString()}`, { cache: "no-store" });
 
     const data = await response.json();
 
@@ -118,7 +119,7 @@ export default function AdminLeadsPage() {
 
     setStatusMessage({ type: "loading", message: `Updating lead to ${status.toLowerCase()}...` });
 
-    const response = await fetch(`/api/leads/${id}`, {
+    const response = await authFetch(`/api/leads/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

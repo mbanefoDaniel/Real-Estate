@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "@/lib/auth-fetch";
 
 type AdminUser = {
   id: string;
@@ -29,7 +30,7 @@ export default function AdminUsersPage() {
     if (!options?.silent) {
       setLoading(true);
     }
-    const response = await fetch("/api/admin/users", { cache: "no-store" });
+    const response = await authFetch("/api/admin/users", { cache: "no-store" });
     const data = await response.json();
 
     if (!response.ok) {
@@ -47,7 +48,7 @@ export default function AdminUsersPage() {
     let active = true;
 
     async function initialLoad() {
-      const response = await fetch("/api/admin/users", { cache: "no-store" });
+      const response = await authFetch("/api/admin/users", { cache: "no-store" });
       const data = await response.json();
 
       if (!active) {
@@ -75,7 +76,7 @@ export default function AdminUsersPage() {
   async function setKycStatus(user: AdminUser, kycStatus: AdminUser["kycStatus"]) {
     setStatus({ type: "loading", message: `Updating KYC for ${user.email}...` });
 
-    const response = await fetch("/api/admin/users", {
+    const response = await authFetch("/api/admin/users", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: user.id, kycStatus }),

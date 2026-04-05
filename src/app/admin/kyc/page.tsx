@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { authFetch } from "@/lib/auth-fetch";
 
 type KycQueueUser = {
   id: string;
@@ -32,7 +33,7 @@ export default function AdminKycQueuePage() {
     setLoading(true);
 
     const query = activeFilter === "ALL" ? "" : `?status=${activeFilter}`;
-    const response = await fetch(`/api/admin/kyc${query}`, { cache: "no-store" });
+    const response = await authFetch(`/api/admin/kyc${query}`, { cache: "no-store" });
     const data = await response.json();
 
     if (!response.ok) {
@@ -50,7 +51,7 @@ export default function AdminKycQueuePage() {
     let active = true;
 
     async function initialLoad() {
-      const response = await fetch("/api/admin/kyc?status=PENDING", { cache: "no-store" });
+      const response = await authFetch("/api/admin/kyc?status=PENDING", { cache: "no-store" });
       const data = await response.json();
 
       if (!active) {
@@ -88,7 +89,7 @@ export default function AdminKycQueuePage() {
   async function updateKycStatus(userId: string, kycStatus: KycQueueUser["kycStatus"]) {
     setStatus({ type: "loading", message: `Updating KYC status to ${kycStatus}...` });
 
-    const response = await fetch("/api/admin/kyc", {
+    const response = await authFetch("/api/admin/kyc", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, kycStatus }),

@@ -3,6 +3,7 @@
 import { FormEvent, useState, useLayoutEffect } from "react";
 import Link from "next/link";
 import TurnstileCaptcha from "@/components/turnstile-captcha";
+import { saveAuthToken } from "@/lib/auth-fetch";
 
 type Status = {
   type: "idle" | "loading" | "success" | "error";
@@ -70,6 +71,11 @@ export default function SignInPage() {
         destination = "/admin";
       } else if (nextPath && !nextPath.startsWith("/admin")) {
         destination = nextPath;
+      }
+
+      // Save token to localStorage as fallback for httpOnly cookie issues
+      if (token) {
+        saveAuthToken(token);
       }
 
       // Navigate via /api/auth/establish which sets the cookie via a

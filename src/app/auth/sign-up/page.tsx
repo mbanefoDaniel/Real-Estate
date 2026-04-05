@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TurnstileCaptcha from "@/components/turnstile-captcha";
+import { saveAuthToken } from "@/lib/auth-fetch";
 
 type Status = {
   type: "idle" | "loading" | "success" | "error";
@@ -65,6 +66,7 @@ export default function SignUpPage() {
       setStatus({ type: "success", message: "Account created. Redirecting..." });
       const token = result?.token;
       if (token) {
+        saveAuthToken(token);
         window.location.href = `/api/auth/establish?token=${encodeURIComponent(token)}&next=${encodeURIComponent("/sell")}`;
       } else {
         router.push("/sell");

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
+import { authFetch, clearAuthToken } from "@/lib/auth-fetch";
 
 type SessionUser = {
   id: string;
@@ -262,7 +263,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
 
     async function loadProfileAndSubscription() {
       try {
-        const res = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+        const res = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = res.ok ? await res.json() : null;
         const meUser = data?.user;
 
@@ -283,7 +284,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
         /* Load subscription only after verifying the session is valid */
         if (sessionUser?.role === "USER") {
           try {
-            const subRes = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
+            const subRes = await authFetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
             if (!subRes.ok) {
               if (mounted) setSubscriptionBadge("INACTIVE");
               return;
@@ -378,7 +379,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
               <MenuItem href="/admin" icon={IconShield} label="Admin Dashboard" description="Moderation & settings" onClick={close} variant="accent" />
             ) : null}
             <MenuDivider />
-            <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={close} variant="danger" />
+            <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={() => { clearAuthToken(); close(); }} variant="danger" />
           </>
         ) : (
           <>
@@ -494,7 +495,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
                     <MenuItem href="/admin" icon={IconShield} label="Admin Dashboard" description="Moderation & settings" onClick={closeDesktop} variant="accent" />
                   ) : null}
                   <MenuDivider />
-                  <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={closeDesktop} variant="danger" />
+                  <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={() => { clearAuthToken(); closeDesktop(); }} variant="danger" />
                 </div>
               ) : null}
             </div>

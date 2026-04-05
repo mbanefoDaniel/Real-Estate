@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
+import { authFetch } from "@/lib/auth-fetch";
 
 type SubscriptionStatusResponse = {
   active: boolean;
@@ -45,7 +46,7 @@ export default function MonthlySubscriptionCard({ priceNgn, className }: Monthly
   useEffect(() => {
     async function loadStatus() {
       try {
-        const response = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
+        const response = await authFetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
         if (!response.ok) {
           setCheckedStatus(true);
           return;
@@ -68,7 +69,7 @@ export default function MonthlySubscriptionCard({ priceNgn, className }: Monthly
     async function verifyReference(reference: string) {
       setLoading(true);
       try {
-        const response = await fetch("/api/payments/subscription/verify", {
+        const response = await authFetch("/api/payments/subscription/verify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -112,7 +113,7 @@ export default function MonthlySubscriptionCard({ priceNgn, className }: Monthly
     setMessage("");
 
     try {
-      const response = await fetch("/api/payments/subscription/initiate", {
+      const response = await authFetch("/api/payments/subscription/initiate", {
         method: "POST",
       });
 
@@ -190,7 +191,7 @@ export default function MonthlySubscriptionCard({ priceNgn, className }: Monthly
               onClick={async () => {
                 setLoading(true);
                 try {
-                  const response = await fetch("/api/payments/subscription/verify", {
+                  const response = await authFetch("/api/payments/subscription/verify", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ reference: lastReference }),

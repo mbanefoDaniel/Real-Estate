@@ -51,12 +51,24 @@ export function verifySessionToken(token: string): SessionUser | null {
 }
 
 export function getSessionUserFromRequest(request: NextRequest): SessionUser | null {
-  const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-  if (!token) {
-    return null;
+  // 1. Try httpOnly cookie (standard path)
+  const cookieToken = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+  if (cookieToken) {
+    const user = verifySessionToken(cookieToken);
+    if (user) return user;
   }
 
-  return verifySessionToken(token);
+  // 2. Fallback: Authorization: Bearer <token> header
+  //    Used when the browser fails to persist httpOnly cookies (some Vercel deployments)
+  const authHeader = request.headers.get("Authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const bearerToken = authHeader.slice(7);
+    if (bearerToken) {
+      return verifySessionToken(bearerToken);
+    }
+  }
+
+  return null;
 }
 
 export function isAdminFromRequest(request: NextRequest): boolean {

@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth-provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 type SavedSearch = {
   id: string;
@@ -37,7 +38,7 @@ export default function SavedSearchesPage() {
 
   async function loadSavedSearches() {
     setLoading(true);
-    const response = await fetch("/api/saved-searches", { cache: "no-store", credentials: "include" });
+    const response = await authFetch("/api/saved-searches", { cache: "no-store", credentials: "include" });
     const data = await response.json();
 
     if (!response.ok) {
@@ -66,7 +67,7 @@ export default function SavedSearchesPage() {
       let verifiedEmail = "";
 
       try {
-        const res = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+        const res = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = await res.json();
         verifiedEmail = data?.user?.email ?? "";
       } catch { /* ignore */ }
@@ -91,7 +92,7 @@ export default function SavedSearchesPage() {
   }, [authUser]);
 
   async function toggleAlert(item: SavedSearch, alertEnabled: boolean) {
-    const response = await fetch(`/api/saved-searches/${item.id}`, {
+    const response = await authFetch(`/api/saved-searches/${item.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ alertEnabled }),
@@ -108,7 +109,7 @@ export default function SavedSearchesPage() {
   }
 
   async function updateFrequency(item: SavedSearch, alertFrequency: SavedSearch["alertFrequency"]) {
-    const response = await fetch(`/api/saved-searches/${item.id}`, {
+    const response = await authFetch(`/api/saved-searches/${item.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ alertFrequency }),
@@ -130,7 +131,7 @@ export default function SavedSearchesPage() {
       return;
     }
 
-    const response = await fetch(`/api/saved-searches/${id}`, { method: "DELETE" });
+    const response = await authFetch(`/api/saved-searches/${id}`, { method: "DELETE" });
     const data = await response.json();
 
     if (!response.ok) {

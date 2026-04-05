@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getOptimizedListingImage } from "@/lib/image-url";
 import { useAuth } from "@/components/auth-provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 type ListingItem = {
   id: string;
@@ -91,7 +92,7 @@ export default function MyListingsPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(value)}`, {
+      const response = await authFetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(value)}`, {
         cache: "no-store",
       });
       const data = await response.json();
@@ -120,7 +121,7 @@ export default function MyListingsPage() {
   }
 
   async function loadAnalytics() {
-    const response = await fetch("/api/owner/analytics", { cache: "no-store", credentials: "include" });
+    const response = await authFetch("/api/owner/analytics", { cache: "no-store", credentials: "include" });
     const data = await response.json();
     if (response.ok) {
       setAnalytics(data as OwnerAnalytics);
@@ -134,7 +135,7 @@ export default function MyListingsPage() {
       let email = "";
 
       try {
-        const response = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+        const response = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const data = await response.json();
         email = data?.user?.email ?? "";
       } catch {
@@ -171,7 +172,7 @@ export default function MyListingsPage() {
       setStatus({ type: "loading", message: "Verifying payment status..." });
 
       try {
-        const response = await fetch("/api/payments/featured/verify", {
+        const response = await authFetch("/api/payments/featured/verify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -222,7 +223,7 @@ export default function MyListingsPage() {
   }, []);
 
   async function handleSignOut() {
-    await fetch("/api/auth/signout", { method: "POST" });
+    await authFetch("/api/auth/signout", { method: "POST" });
     setOwnerEmail("");
     setListings([]);
     setAnalytics(null);
@@ -239,7 +240,7 @@ export default function MyListingsPage() {
 
     setStatus({ type: "loading", message: "Archiving listing..." });
 
-    const response = await fetch(`/api/properties/${id}`, {
+    const response = await authFetch(`/api/properties/${id}`, {
       method: "DELETE",
     });
 
@@ -291,7 +292,7 @@ export default function MyListingsPage() {
       featured: formData.get("featured") === "on",
     };
 
-    const response = await fetch(`/api/properties/${selected.id}`, {
+    const response = await authFetch(`/api/properties/${selected.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -316,7 +317,7 @@ export default function MyListingsPage() {
   async function handlePromoteListing(id: string, plan: PromotionPlan) {
     setStatus({ type: "loading", message: `Starting ${plan.toLowerCase()} promotion payment...` });
 
-    const response = await fetch("/api/payments/featured/initiate", {
+    const response = await authFetch("/api/payments/featured/initiate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

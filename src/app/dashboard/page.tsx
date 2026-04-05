@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAuth } from "@/components/auth-provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 type SessionUser = {
   id: string;
@@ -138,7 +139,7 @@ export default function ProfileDashboardPage() {
 
     async function loadDashboard() {
       try {
-        const meResponse = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+        const meResponse = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const meData = await meResponse.json();
         const currentUser = meData?.user ?? null;
 
@@ -160,7 +161,7 @@ export default function ProfileDashboardPage() {
 
         if (currentUser.role === "USER") {
           try {
-            const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
+            const subscriptionResponse = await authFetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
             if (subscriptionResponse.ok) {
               const subscriptionData = await subscriptionResponse.json();
               setSubscriptionState({
@@ -176,8 +177,8 @@ export default function ProfileDashboardPage() {
 
         try {
           const [listingsResponse, savedSearchesResponse] = await Promise.all([
-            fetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(currentUser.email)}`, { cache: "no-store", credentials: "include" }),
-            fetch("/api/saved-searches", { cache: "no-store", credentials: "include" }),
+            authFetch(`/api/properties?includeAll=true&ownerEmail=${encodeURIComponent(currentUser.email)}`, { cache: "no-store", credentials: "include" }),
+            authFetch("/api/saved-searches", { cache: "no-store", credentials: "include" }),
           ]);
 
           const listingsData = listingsResponse.ok ? await listingsResponse.json() : [];
@@ -209,14 +210,14 @@ export default function ProfileDashboardPage() {
   }, []);
 
   async function handleSignOut() {
-    await fetch("/api/auth/signout", { method: "POST" });
+    await authFetch("/api/auth/signout", { method: "POST" });
     window.location.assign("/auth/sign-in");
   }
 
   async function handleSaveName() {
     setNameStatus({ type: "loading", message: "Saving profile..." });
 
-    const response = await fetch("/api/auth/profile", {
+    const response = await authFetch("/api/auth/profile", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -248,7 +249,7 @@ export default function ProfileDashboardPage() {
 
     setPasswordStatus({ type: "loading", message: "Updating password..." });
 
-    const response = await fetch("/api/auth/profile", {
+    const response = await authFetch("/api/auth/profile", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -278,7 +279,7 @@ export default function ProfileDashboardPage() {
     const uploadForm = new FormData();
     uploadForm.append("file", file);
 
-    const uploadResponse = await fetch("/api/uploads", {
+    const uploadResponse = await authFetch("/api/uploads", {
       method: "POST",
       body: uploadForm,
     });
@@ -292,7 +293,7 @@ export default function ProfileDashboardPage() {
       return;
     }
 
-    const profileResponse = await fetch("/api/auth/profile", {
+    const profileResponse = await authFetch("/api/auth/profile", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -316,7 +317,7 @@ export default function ProfileDashboardPage() {
     const uploadForm = new FormData();
     uploadForm.append("file", file);
 
-    const uploadResponse = await fetch("/api/uploads", {
+    const uploadResponse = await authFetch("/api/uploads", {
       method: "POST",
       body: uploadForm,
     });
@@ -330,7 +331,7 @@ export default function ProfileDashboardPage() {
       return;
     }
 
-    const profileResponse = await fetch("/api/auth/profile", {
+    const profileResponse = await authFetch("/api/auth/profile", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

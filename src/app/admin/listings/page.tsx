@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { authFetch } from "@/lib/auth-fetch";
 
 type ModerationListing = {
   id: string;
@@ -51,7 +52,7 @@ export default function AdminListingsPage() {
   });
 
   async function loadCurrentUser() {
-    const response = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+    const response = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
     const data = await response.json();
     const admin = data?.user?.role === "ADMIN";
     setIsAdmin(admin);
@@ -77,7 +78,7 @@ export default function AdminListingsPage() {
     }
 
     try {
-      const response = await fetch(`/api/properties?includeAll=true&includeArchived=${showArchived ? "true" : "false"}`, {
+      const response = await authFetch(`/api/properties?includeAll=true&includeArchived=${showArchived ? "true" : "false"}`, {
         cache: "no-store",
       });
       const data = await response.json();
@@ -118,7 +119,7 @@ export default function AdminListingsPage() {
   }, [listings, showPendingOnly]);
 
   async function restoreListing(id: string) {
-    const response = await fetch(`/api/properties/${id}/restore`, {
+    const response = await authFetch(`/api/properties/${id}/restore`, {
       method: "POST",
     });
 
@@ -171,7 +172,7 @@ export default function AdminListingsPage() {
       }
     }
 
-    const response = await fetch(`/api/properties/${id}`, {
+    const response = await authFetch(`/api/properties/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

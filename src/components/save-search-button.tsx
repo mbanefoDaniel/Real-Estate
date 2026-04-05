@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "@/lib/auth-fetch";
 
 type SaveSearchFilters = {
   location?: string;
@@ -34,7 +35,7 @@ export default function SaveSearchButton({ filters }: { filters: SaveSearchFilte
       setStatus("saving");
       setMessage("");
 
-      const response = await fetch("/api/saved-searches", {
+      const response = await authFetch("/api/saved-searches", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

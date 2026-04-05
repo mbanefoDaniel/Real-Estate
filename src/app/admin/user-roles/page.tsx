@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "@/lib/auth-fetch";
 
 type AdminUser = {
   id: string;
@@ -22,7 +23,7 @@ export default function AdminUserRolesPage() {
 
   async function loadUsers() {
     setLoading(true);
-    const response = await fetch("/api/admin/users", { cache: "no-store" });
+    const response = await authFetch("/api/admin/users", { cache: "no-store" });
     const data = await response.json();
 
     if (!response.ok) {
@@ -40,7 +41,7 @@ export default function AdminUserRolesPage() {
     let active = true;
 
     async function initialLoad() {
-      const response = await fetch("/api/admin/users", { cache: "no-store" });
+      const response = await authFetch("/api/admin/users", { cache: "no-store" });
       const data = await response.json();
 
       if (!active) {
@@ -68,7 +69,7 @@ export default function AdminUserRolesPage() {
   async function setRole(user: AdminUser, role: "USER" | "ADMIN") {
     setStatus({ type: "loading", message: `Updating ${user.email}...` });
 
-    const response = await fetch("/api/admin/users", {
+    const response = await authFetch("/api/admin/users", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: user.id, role }),

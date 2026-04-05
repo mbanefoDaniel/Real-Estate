@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import TurnstileCaptcha from "@/components/turnstile-captcha";
 import { useAuth } from "@/components/auth-provider";
+import { authFetch } from "@/lib/auth-fetch";
 
 type Status = {
   type: "idle" | "loading" | "success" | "error";
@@ -65,7 +66,7 @@ export default function SellPage() {
       let role: "USER" | "ADMIN" = "USER";
 
       try {
-        const meRes = await fetch("/api/auth/me", { cache: "no-store", credentials: "include" });
+        const meRes = await authFetch("/api/auth/me", { cache: "no-store", credentials: "include" });
         const meData = await meRes.json();
         email = meData?.user?.email ?? "";
         role = meData?.user?.role === "ADMIN" ? "ADMIN" : "USER";
@@ -86,7 +87,7 @@ export default function SellPage() {
       }
 
       try {
-        const subRes = await fetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
+        const subRes = await authFetch("/api/subscription/status", { cache: "no-store", credentials: "include" });
         if (cancelled) return;
         if (subRes.ok) {
           const subData = await subRes.json();
@@ -196,7 +197,7 @@ export default function SellPage() {
       const uploadFormData = new FormData();
       uploadFormData.append("file", file);
 
-      const uploadResponse = await fetch("/api/uploads", {
+      const uploadResponse = await authFetch("/api/uploads", {
         method: "POST",
         body: uploadFormData,
       });
@@ -234,7 +235,7 @@ export default function SellPage() {
       captchaToken,
     };
 
-    const propertyResponse = await fetch("/api/properties", {
+    const propertyResponse = await authFetch("/api/properties", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

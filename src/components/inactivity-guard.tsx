@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { clearAuthToken } from "@/lib/auth-fetch";
 
 const INACTIVITY_LIMIT_MS = 30 * 60 * 1000;   // 30 minutes
 const WARNING_BEFORE_MS = 5 * 60 * 1000;       // warn 5 min before logout
@@ -30,6 +31,7 @@ export default function InactivityGuard() {
       const idle = Date.now() - lastActivityRef.current;
 
       if (idle >= INACTIVITY_LIMIT_MS) {
+        clearAuthToken();
         window.location.assign("/api/auth/signout?next=/auth/sign-in");
         return;
       }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authFetch } from "@/lib/auth-fetch";
 
 type AuditLog = {
   id: string;
@@ -39,7 +40,7 @@ export default function AdminAuditPage() {
     if (!options?.silent) {
       setLoading(true);
     }
-    const response = await fetch("/api/admin/audit?limit=200", { cache: "no-store" });
+    const response = await authFetch("/api/admin/audit?limit=200", { cache: "no-store" });
     const data = await response.json();
 
     if (!response.ok) {
@@ -58,7 +59,7 @@ export default function AdminAuditPage() {
     let active = true;
 
     async function initialLoad() {
-      const response = await fetch("/api/admin/audit?limit=200", { cache: "no-store" });
+      const response = await authFetch("/api/admin/audit?limit=200", { cache: "no-store" });
       const data = await response.json();
 
       if (!active) {
