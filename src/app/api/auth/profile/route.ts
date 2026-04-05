@@ -128,7 +128,7 @@ export async function PATCH(request: NextRequest) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      // No maxAge — session cookie is cleared when browser closes
+      maxAge: getSessionTtlSeconds(),
     });
 
     return response;

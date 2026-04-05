@@ -22,7 +22,7 @@ export default function SellPage() {
   const sessionUser = useAuth();
   const [status, setStatus] = useState<Status>(initialStatus);
   const [ownerEmail, setOwnerEmail] = useState(sessionUser?.email ?? "");
-  const [authReady, setAuthReady] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
   const [subscriptionReady, setSubscriptionReady] = useState(false);
   const [subscriptionActive, setSubscriptionActive] = useState(sessionUser?.role === "ADMIN");
   const [subscriptionExpiresAt, setSubscriptionExpiresAt] = useState<string | null>(null);
@@ -51,22 +51,51 @@ export default function SellPage() {
     };
   }, [previewUrl]);
 
+  /* Bootstrap auth + subscription in a single effect so we never
+     skip the subscription check when the context user is null on
+     first render (common on mobile where session cookies may arrive
+     after hydration). */
   useEffect(() => {
-    async function loadSubscription() {
-      if (!sessionUser || sessionUser.role === "ADMIN") {
+    let cancelled = false;
+
+    async function bootstrap() {
+      /* 1. Resolve the authenticated user */
+      let email = sessionUser?.email ?? "";
+      let role = sessionUser?.role ?? "USER";
+
+      if (!email) {
+        try {
+          const meRes = await fetch("/api/auth/me", { cache: "no-store" });
+          const meData = await meRes.json();
+          email = meData?.user?.email ?? "";
+          role = meData?.user?.role ?? "USER";
+        } catch { /* ignore */ }
+      }
+
+      if (cancelled) return;
+
+      if (email) {
+        setOwnerEmail(email);
+      }
+      setAuthReady(true);
+
+      /* 2. Check subscription (admins bypass) */
+      if (!email || role === "ADMIN") {
+        setSubscriptionActive(role === "ADMIN");
         setSubscriptionReady(true);
         return;
       }
 
       try {
-        const subscriptionResponse = await fetch("/api/subscription/status", { cache: "no-store" });
-        if (subscriptionResponse.ok) {
-          const subscriptionData = await subscriptionResponse.json();
-          setSubscriptionActive(Boolean(subscriptionData?.active));
-          setSubscriptionExpiresAt(subscriptionData?.subscription?.expiresAt ?? null);
+        const subRes = await fetch("/api/subscription/status", { cache: "no-store" });
+        if (cancelled) return;
+        if (subRes.ok) {
+          const subData = await subRes.json();
+          setSubscriptionActive(Boolean(subData?.active));
+          setSubscriptionExpiresAt(subData?.subscription?.expiresAt ?? null);
           setSubscriptionStatus(
-            typeof subscriptionData?.subscription?.status === "string"
-              ? subscriptionData.subscription.status
+            typeof subData?.subscription?.status === "string"
+              ? subData.subscription.status
               : null
           );
         } else {
@@ -74,15 +103,20 @@ export default function SellPage() {
           setSubscriptionStatus(null);
         }
       } catch {
-        setSubscriptionActive(false);
-        setSubscriptionStatus(null);
+        if (!cancelled) {
+          setSubscriptionActive(false);
+          setSubscriptionStatus(null);
+        }
       } finally {
-        setSubscriptionReady(true);
+        if (!cancelled) setSubscriptionReady(true);
       }
     }
 
-    void loadSubscription();
-  }, []);
+    void bootstrap();
+    return () => { cancelled = true; };
+    // Re-run if the context user changes (e.g. after hydration)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionUser?.email]);
 
   function updateDraftValue(name: string, value: string) {
     setDraft((prev) => {
