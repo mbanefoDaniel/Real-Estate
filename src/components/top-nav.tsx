@@ -172,6 +172,7 @@ function MenuItem({
   return (
     <Link
       href={href}
+      prefetch={false}
       onClick={onClick}
       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors ${colorClasses}`}
       role="menuitem"

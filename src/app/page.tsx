@@ -124,80 +124,95 @@ export default async function Home() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 md:px-10 md:py-10">
-      <section className="relative overflow-hidden rounded-2xl border border-black/10 bg-[#0d1f23] p-6 text-white shadow-sm sm:p-8 md:p-10">
+      {/* ── HERO ─────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1a1d] via-[#0d2428] to-[#112f28] p-6 text-white sm:p-8 md:p-10 lg:p-12">
+        {/* ambient glow */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(34,211,238,0.22),transparent_38%),radial-gradient(circle_at_85%_15%,rgba(245,158,11,0.18),transparent_36%),radial-gradient(circle_at_55%_100%,rgba(16,185,129,0.16),transparent_44%)]" />
-          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
+          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-[100px]" />
+          <div className="absolute -bottom-20 -right-20 h-60 w-60 rounded-full bg-amber-400/20 blur-[90px]" />
         </div>
 
-        <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1fr_340px]">
+          {/* ── left copy ── */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200 sm:text-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.07] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-300 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               Christoland
-            </p>
-            <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
-              Find verified homes and land across
-              <span className="text-amber-300"> Nigeria&apos;s prime neighborhoods</span>.
+            </span>
+
+            <h1 className="mt-5 max-w-xl text-3xl font-bold leading-[1.15] tracking-tight sm:text-4xl md:text-[2.75rem]">
+              Premium homes &amp; land in
+              <span className="bg-gradient-to-r from-amber-300 to-amber-400 bg-clip-text text-transparent"> Nigeria&apos;s finest locations</span>
             </h1>
-            <p className="mt-4 max-w-2xl text-sm text-white/80 sm:text-base md:text-lg">
-              Browse premium listings, compare locations, and connect with trusted sellers through one modern marketplace.
+
+            <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-white/65">
+              Verified listings, transparent pricing, and direct seller access — everything you need in one marketplace.
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/properties"
-                className="inline-flex rounded-lg bg-amber-400 px-6 py-3 text-center text-sm font-semibold text-[#1f2a2c] transition hover:bg-amber-300"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-semibold text-[#1a2c1e] shadow-lg shadow-amber-400/20 transition hover:bg-amber-300 hover:shadow-amber-300/30"
               >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 Explore Properties
               </Link>
               <Link
                 href="/sell"
-                className="inline-flex rounded-lg border border-white/25 bg-white/10 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/20"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/[0.07] px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/[0.12]"
               >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
                 Post a Listing
               </Link>
             </div>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-wide text-white/70">Cities Covered</p>
-                <p className="mt-1 text-lg font-semibold">25+</p>
-              </div>
-              <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-wide text-white/70">Verified Leads</p>
-                <p className="mt-1 text-lg font-semibold">12k+</p>
-              </div>
-              <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-wide text-white/70">Avg. Response</p>
-                <p className="mt-1 text-lg font-semibold">Under 2h</p>
-              </div>
+            {/* stat chips */}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[
+                { label: "Cities", value: "25+" },
+                { label: "Verified Leads", value: "12k+" },
+                { label: "Avg. Response", value: "< 2 hrs" },
+              ].map((s) => (
+                <span key={s.label} className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs backdrop-blur-sm">
+                  <span className="font-bold text-white">{s.value}</span>
+                  <span className="text-white/50">{s.label}</span>
+                </span>
+              ))}
             </div>
           </div>
 
+          {/* ── spotlight card ── */}
           <Link
             href={`/properties/${heroSpotlight.id}`}
-            className="group overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md"
+            className="group relative hidden overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.06] backdrop-blur-md transition hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 lg:block"
           >
-            <div className="relative h-56 w-full">
+            <div className="relative h-52 w-full overflow-hidden">
               <Image
                 src={getOptimizedListingImage(heroSpotlight.imageUrl, 1200)}
                 alt={heroSpotlight.title}
                 fill
                 priority
                 className="object-cover transition duration-500 group-hover:scale-105"
-                sizes="(max-width: 1024px) 100vw, 360px"
+                sizes="340px"
               />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
-                <p className="text-xs uppercase tracking-[0.2em] text-cyan-100">Spotlight Listing</p>
-                <p className="mt-1 text-lg font-semibold">{heroSpotlight.city}</p>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-300 backdrop-blur-sm">
+                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Spotlight
+              </span>
             </div>
-            <div className="p-5">
-              <h2 className="line-clamp-2 text-lg font-semibold">{heroSpotlight.title}</h2>
-              <p className="mt-2 text-2xl font-bold text-amber-300">{ngn(heroSpotlight.price)}</p>
-              <p className="mt-2 text-sm text-white/75">
-                {heroSpotlight.bedrooms} bed • {heroSpotlight.bathrooms} bath • {heroSpotlight.areaSqft} sqft
-              </p>
+
+            <div className="p-4">
+              <p className="text-xs font-medium text-white/50">{heroSpotlight.city}</p>
+              <h2 className="mt-0.5 line-clamp-1 text-base font-semibold">{heroSpotlight.title}</h2>
+              <p className="mt-2 text-xl font-bold text-amber-300">{ngn(heroSpotlight.price)}</p>
+              <div className="mt-2.5 flex items-center gap-3 text-xs text-white/55">
+                <span>{heroSpotlight.bedrooms} bed</span>
+                <span className="h-3 w-px bg-white/20" />
+                <span>{heroSpotlight.bathrooms} bath</span>
+                <span className="h-3 w-px bg-white/20" />
+                <span>{heroSpotlight.areaSqft.toLocaleString()} sqft</span>
+              </div>
             </div>
           </Link>
         </div>
