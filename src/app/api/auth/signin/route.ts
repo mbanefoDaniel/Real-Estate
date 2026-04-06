@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { createSessionToken, getAuthCookieName, getSessionTtlSeconds, buildAuthSetCookieHeader } from "@/lib/auth";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { verifyCaptchaToken } from "@/lib/captcha";
+import { sendOtp } from "@/lib/otp";
 
 function parseRequiredString(value: unknown) {
   if (typeof value !== "string") {
@@ -62,6 +63,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Invalid email or password." },
         { status: 401 }
+      );
+    }
+
+    // If email is not verified, resend OTP and ask user to verify
+    if (!user.emailVerified) {
+      await sendOtp(user.id, user.email, "email-verify");
+      return NextResponse.json(
+        { requiresVerification: true, email: user.email },
+        { status: 200 }
       );
     }
 

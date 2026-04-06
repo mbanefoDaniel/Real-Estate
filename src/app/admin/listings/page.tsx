@@ -18,6 +18,7 @@ type ModerationListing = {
   isArchived?: boolean;
   archivedAt?: string | null;
   archivedByEmail?: string | null;
+  featured?: boolean;
   price: number;
 };
 
@@ -114,9 +115,12 @@ export default function AdminListingsPage() {
     }
 
     return listings.filter(
-      (listing) => (listing.status ?? "PENDING") === "PENDING" && !listing.isArchived
+      (listing) => {
+        if (listing.isArchived) return showArchived;
+        return (listing.status ?? "PENDING") === "PENDING";
+      }
     );
-  }, [listings, showPendingOnly]);
+  }, [listings, showPendingOnly, showArchived]);
 
   async function restoreListing(id: string) {
     const response = await authFetch(`/api/properties/${id}/restore`, {
@@ -134,6 +138,41 @@ export default function AdminListingsPage() {
 
     setListings((prev) => prev.map((item) => (item.id === id ? data : item)));
     setStatusMessage({ type: "success", message: "Listing restored successfully." });
+  }
+
+  async function toggleFeatured(id: string, current: boolean) {
+    if (!isAdmin) {
+      setStatusMessage({ type: "error", message: "Admin access required." });
+      return;
+    }
+
+    const action = current ? "remove from" : "add to";
+    if (!window.confirm(`Are you sure you want to ${action} spotlight?`)) return;
+
+    setStatusMessage({ type: "loading", message: `Updating spotlight status...` });
+
+    const listing = listings.find((item) => item.id === id);
+    if (!listing) {
+      setStatusMessage({ type: "error", message: "Listing not found in state." });
+      return;
+    }
+
+    const response = await authFetch(`/api/properties/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...listing, featured: !current }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      setStatusMessage({ type: "error", message: data?.error || "Unable to update spotlight status." });
+      return;
+    }
+
+    setListings((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, featured: !current } : item))
+    );
+    setStatusMessage({ type: "success", message: current ? "Listing removed from spotlight." : "Listing added to spotlight." });
   }
 
   async function updateStatus(id: string, status: "APPROVED" | "REJECTED") {
@@ -264,7 +303,7 @@ export default function AdminListingsPage() {
                   : "border border-black/[0.08] hover:bg-black/[0.03]"
               }`}
             >
-              {showArchived ? "Hide Archived" : "Show Archived"}
+              {showArchived ? "Hide Deleted" : "Show Deleted"}
             </button>
             <Link
               href="/admin/leads"
@@ -332,8 +371,11 @@ export default function AdminListingsPage() {
                       : (listing.status ?? "PENDING") === "REJECTED" ? "bg-red-50 text-red-700"
                       : "bg-amber-50 text-amber-700"
                     }`}>{listing.status ?? "PENDING"}</span>
+                    {listing.featured ? (
+                      <span className="rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700">★ Spotlight</span>
+                    ) : null}
                     {listing.isArchived ? (
-                      <span className="rounded-md bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-600">Archived</span>
+                      <span className="rounded-md bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-600">Deleted</span>
                     ) : null}
                   </div>
                 </div>
@@ -350,7 +392,7 @@ export default function AdminListingsPage() {
                       </span>
                     ) : null}
                   </div>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                  <div className="mt-3 grid gap-2 sm:grid-cols-4">
                     <Link
                       href={`/properties/${listing.id}`}
                       className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-black/[0.08] px-4 py-2.5 text-sm font-medium transition hover:bg-black/[0.03]"
@@ -373,6 +415,18 @@ export default function AdminListingsPage() {
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                       Reject
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleFeatured(listing.id, !!listing.featured)}
+                      className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-medium transition ${
+                        listing.featured
+                          ? "border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
+                          : "bg-amber-500 text-white hover:bg-amber-600"
+                      }`}
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill={listing.featured ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                      {listing.featured ? "Remove Spotlight" : "Add Spotlight"}
                     </button>
                   </div>
                 </div>

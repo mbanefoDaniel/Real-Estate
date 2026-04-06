@@ -126,6 +126,10 @@ export default function ProfileDashboardPage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordOtp, setPasswordOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpStatus, setOtpStatus] = useState<FormStatus>({ type: "idle", message: "" });
+  const [otpCooldown, setOtpCooldown] = useState(0);
   const [profileImageStatus, setProfileImageStatus] = useState<FormStatus>({ type: "idle", message: "" });
   const [kycStatus, setKycStatus] = useState<FormStatus>({ type: "idle", message: "" });
   const [subscriptionState, setSubscriptionState] = useState<SubscriptionState>({
@@ -209,6 +213,38 @@ export default function ProfileDashboardPage() {
     };
   }, []);
 
+  // OTP cooldown timer
+  useEffect(() => {
+    if (otpCooldown <= 0) return;
+    const t = setTimeout(() => setOtpCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [otpCooldown]);
+
+  async function handleRequestPasswordOtp() {
+    setOtpStatus({ type: "loading", message: "Sending OTP..." });
+
+    try {
+      const res = await authFetch("/api/auth/request-password-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setOtpStatus({ type: "error", message: data?.error || "Unable to send OTP." });
+        return;
+      }
+
+      setOtpSent(true);
+      setOtpCooldown(60);
+      setOtpStatus({ type: "success", message: "OTP sent to your email." });
+    } catch {
+      setOtpStatus({ type: "error", message: "Network error." });
+    }
+  }
+
   async function handleSignOut() {
     await authFetch("/api/auth/signout", { method: "POST" });
     window.location.assign("/auth/sign-in");
@@ -247,6 +283,11 @@ export default function ProfileDashboardPage() {
       return;
     }
 
+    if (!passwordOtp) {
+      setPasswordStatus({ type: "error", message: "Enter the OTP sent to your email." });
+      return;
+    }
+
     setPasswordStatus({ type: "loading", message: "Updating password..." });
 
     const response = await authFetch("/api/auth/profile", {
@@ -257,6 +298,7 @@ export default function ProfileDashboardPage() {
       body: JSON.stringify({
         currentPassword,
         newPassword,
+        passwordOtp,
       }),
     });
 
@@ -270,6 +312,9 @@ export default function ProfileDashboardPage() {
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
+    setPasswordOtp("");
+    setOtpSent(false);
+    setOtpStatus({ type: "idle", message: "" });
     setPasswordStatus({ type: "success", message: "Password updated successfully." });
   }
 
@@ -605,6 +650,46 @@ export default function ProfileDashboardPage() {
                   />
                 </div>
               </div>
+
+              {/* OTP Step */}
+              <div className="rounded-xl border border-black/[0.06] bg-black/[0.015] p-3">
+                <p className="mb-2 text-xs font-medium text-muted">
+                  For security, an OTP must be sent to your registered email before changing your password.
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleRequestPasswordOtp}
+                    disabled={otpCooldown > 0 || otpStatus.type === "loading"}
+                    className="shrink-0 rounded-lg border border-accent/30 bg-accent/5 px-4 py-2 text-xs font-semibold text-accent transition hover:bg-accent/10 disabled:opacity-50"
+                  >
+                    {otpStatus.type === "loading"
+                      ? "Sending..."
+                      : otpCooldown > 0
+                        ? `Resend in ${otpCooldown}s`
+                        : otpSent
+                          ? "Resend OTP"
+                          : "Send OTP"}
+                  </button>
+                  {otpSent && (
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={passwordOtp}
+                      onChange={(e) => setPasswordOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      placeholder="Enter 6-digit OTP"
+                      className="min-w-0 flex-1 rounded-xl border border-black/10 bg-white px-4 py-2 text-sm shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    />
+                  )}
+                </div>
+                {otpStatus.message && otpStatus.type !== "loading" ? (
+                  <p className={`mt-1.5 text-xs font-medium ${otpStatus.type === "error" ? "text-rose-600" : "text-accent"}`}>
+                    {otpStatus.message}
+                  </p>
+                ) : null}
+              </div>
+
               <div>
                 <button
                   type="button"

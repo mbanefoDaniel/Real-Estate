@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { getOptimizedListingImage } from "@/lib/image-url";
+import SpotlightSlider from "@/components/spotlight-slider";
 
 type PropertyCard = {
   id: string;
@@ -120,7 +121,16 @@ export default async function Home() {
     getLandListings("SALE"),
     getLandListings("LEASE"),
   ]);
-  const heroSpotlight = featuredProperties[0] ?? fallbackProperties[0];
+  const spotlightItems = (featuredProperties.length > 0 ? featuredProperties : fallbackProperties).map((p) => ({
+    id: p.id,
+    title: p.title,
+    city: p.city,
+    price: p.price,
+    bedrooms: p.bedrooms,
+    bathrooms: p.bathrooms,
+    areaSqft: p.areaSqft,
+    imageUrl: getOptimizedListingImage(p.imageUrl, 1200),
+  }));
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 md:px-10 md:py-10">
@@ -181,40 +191,8 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* ── spotlight card ── */}
-          <Link
-            href={`/properties/${heroSpotlight.id}`}
-            className="group relative hidden overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.06] backdrop-blur-md transition hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 lg:block"
-          >
-            <div className="relative h-52 w-full overflow-hidden">
-              <Image
-                src={getOptimizedListingImage(heroSpotlight.imageUrl, 1200)}
-                alt={heroSpotlight.title}
-                fill
-                priority
-                className="object-cover transition duration-500 group-hover:scale-105"
-                sizes="340px"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-lg bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-300 backdrop-blur-sm">
-                <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                Spotlight
-              </span>
-            </div>
-
-            <div className="p-4">
-              <p className="text-xs font-medium text-white/50">{heroSpotlight.city}</p>
-              <h2 className="mt-0.5 line-clamp-1 text-base font-semibold">{heroSpotlight.title}</h2>
-              <p className="mt-2 text-xl font-bold text-amber-300">{ngn(heroSpotlight.price)}</p>
-              <div className="mt-2.5 flex items-center gap-3 text-xs text-white/55">
-                <span>{heroSpotlight.bedrooms} bed</span>
-                <span className="h-3 w-px bg-white/20" />
-                <span>{heroSpotlight.bathrooms} bath</span>
-                <span className="h-3 w-px bg-white/20" />
-                <span>{heroSpotlight.areaSqft.toLocaleString()} sqft</span>
-              </div>
-            </div>
-          </Link>
+          {/* ── spotlight slider ── */}
+          <SpotlightSlider items={spotlightItems} />
         </div>
       </section>
 

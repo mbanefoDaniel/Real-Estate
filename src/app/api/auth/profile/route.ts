@@ -8,6 +8,7 @@ import {
   buildAuthSetCookieHeader,
   getSessionUserFromRequest,
 } from "@/lib/auth";
+import { verifyOtp } from "@/lib/otp";
 
 function parseString(value: unknown) {
   if (typeof value !== "string") {
@@ -35,6 +36,7 @@ export async function PATCH(request: NextRequest) {
 
     const currentPassword = parseString(body.currentPassword);
     const newPassword = parseString(body.newPassword);
+    const passwordOtp = parseString(body.passwordOtp);
 
     const wantsPasswordChange = Boolean(currentPassword || newPassword);
 
@@ -87,6 +89,13 @@ export async function PATCH(request: NextRequest) {
         );
       }
 
+      if (!passwordOtp) {
+        return NextResponse.json(
+          { error: "OTP is required to change password. Request one first." },
+          { status: 400 }
+        );
+      }
+
       if (newPassword.length < 8) {
         return NextResponse.json(
           { error: "New password must be at least 8 characters." },
@@ -99,6 +108,14 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json(
           { error: "Current password is incorrect." },
           { status: 401 }
+        );
+      }
+
+      const otpResult = await verifyOtp(existingUser.id, passwordOtp, "password-change");
+      if (!otpResult.valid) {
+        return NextResponse.json(
+          { error: otpResult.error || "Invalid or expired OTP." },
+          { status: 400 }
         );
       }
 

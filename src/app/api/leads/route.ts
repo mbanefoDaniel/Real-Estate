@@ -125,6 +125,7 @@ export async function POST(request: NextRequest) {
     const email = parseRequiredString(body.email);
     const message = parseRequiredString(body.message);
     const phone = parseRequiredString(body.phone);
+    const whatsapp = parseRequiredString(body.whatsapp);
     const source = parseRequiredString(body.source);
 
     if (!propertyId || !name || !email || !message || !phone) {
@@ -149,6 +150,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
+        whatsapp: whatsapp || null,
         message: source ? `${message}\n\n[Source: ${source}]` : message,
         status: "NEW",
       },

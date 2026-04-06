@@ -62,6 +62,14 @@ export default function SignInPage() {
         return;
       }
 
+      // Handle unverified email — redirect to verify page
+      if (result?.requiresVerification) {
+        setStatus({ type: "success", message: "Please verify your email first." });
+        const verifyEmail = encodeURIComponent(result.email || "");
+        window.location.href = `/auth/verify-email?email=${verifyEmail}`;
+        return;
+      }
+
       setStatus({ type: "success", message: "Signed in. Redirecting..." });
       const role = result?.role;
       const token = result?.token;

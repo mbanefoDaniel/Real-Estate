@@ -63,6 +63,7 @@ export default function LeadForm({ propertyId }: LeadFormProps) {
         name: formData.get("name"),
         email: formData.get("email"),
         phone: `${dialCode}${String(formData.get("phone") ?? "").replace(/^0+/, "")}`,
+        whatsapp: formData.get("whatsapp") ? `${dialCode}${String(formData.get("whatsapp") ?? "").replace(/^0+/, "")}` : undefined,
         message: formData.get("message"),
         source: "property_details",
         captchaToken,
@@ -129,6 +130,14 @@ export default function LeadForm({ propertyId }: LeadFormProps) {
           className="min-w-0 flex-1 rounded-xl border border-black/10 bg-white px-4 py-3 text-sm"
         />
       </div>
+      <input
+        name="whatsapp"
+        type="tel"
+        placeholder="WhatsApp number (if different)"
+        pattern="[0-9]{7,15}"
+        title="Enter 7 to 15 digits"
+        className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm"
+      />
       <textarea
         name="message"
         rows={4}

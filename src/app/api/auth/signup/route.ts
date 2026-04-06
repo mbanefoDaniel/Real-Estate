@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { createSessionToken, buildAuthSetCookieHeader } from "@/lib/auth";
 import { enforceRateLimit } from "@/lib/rate-limit";
 import { verifyCaptchaToken } from "@/lib/captcha";
+import { sendOtp } from "@/lib/otp";
 
 function parseRequiredString(value: unknown) {
   if (typeof value !== "string") {
@@ -89,15 +89,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const token = createSessionToken(user);
+    // Send email verification OTP instead of issuing session
+    await sendOtp(user.id, email, "email-verify");
 
-    return new Response(JSON.stringify({ ...user, token }), {
-      status: 201,
-      headers: [
-        ["Content-Type", "application/json"],
-        ["Set-Cookie", buildAuthSetCookieHeader(token)],
-      ],
-    });
+    return NextResponse.json(
+      { requiresVerification: true, email: user.email },
+      { status: 201 }
+    );
   } catch {
     return NextResponse.json(
       { error: "Unable to create account." },
