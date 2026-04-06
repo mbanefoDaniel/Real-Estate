@@ -133,6 +133,7 @@ export async function GET(request: NextRequest) {
 
     if (featuredParam === "true") {
       where.featured = true;
+      where.status = "APPROVED";
     }
 
     if (featuredParam === "false") {

@@ -410,6 +410,7 @@ export async function DELETE(
         isArchived: true,
         archivedAt: new Date(),
         archivedByEmail,
+        featured: false,
       },
     });
 

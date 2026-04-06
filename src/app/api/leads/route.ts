@@ -127,9 +127,9 @@ export async function POST(request: NextRequest) {
     const phone = parseRequiredString(body.phone);
     const source = parseRequiredString(body.source);
 
-    if (!propertyId || !name || !email || !message) {
+    if (!propertyId || !name || !email || !message || !phone) {
       return NextResponse.json(
-        { error: "propertyId, name, email, and message are required." },
+        { error: "propertyId, name, email, phone, and message are required." },
         { status: 400 }
       );
     }

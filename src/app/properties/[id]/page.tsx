@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { getOptimizedListingImage } from "@/lib/image-url";
+import { getAuthCookieName, verifySessionToken } from "@/lib/auth";
 import LeadForm from "@/components/lead-form";
 import RecentlyViewedTracker from "@/components/recently-viewed-tracker";
 import CompareToggleButton from "@/components/compare-toggle-button";
@@ -77,6 +79,11 @@ export default async function PropertyDetailsPage({ params }: PropertyPageProps)
     notFound();
   }
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get(getAuthCookieName())?.value;
+  const sessionUser = token ? verifySessionToken(token) : null;
+  const isOwner = sessionUser?.email === property.ownerEmail;
+
   const isLandOnly = property.bedrooms === 0 && property.bathrooms === 0;
   const similarListings = await prisma.property.findMany({
     where: {
@@ -132,7 +139,7 @@ export default async function PropertyDetailsPage({ params }: PropertyPageProps)
         Back to listings
       </Link>
 
-      <article className="mt-4 overflow-hidden rounded-3xl bg-surface shadow-sm ring-1 ring-black/5">
+      <article className="mt-4 overflow-hidden rounded-2xl bg-surface shadow-sm ring-1 ring-black/5">
         <div className="relative h-56 w-full sm:h-72 md:h-[420px]">
           <Image
             src={getOptimizedListingImage(property.imageUrl, 1600)}
@@ -147,17 +154,17 @@ export default async function PropertyDetailsPage({ params }: PropertyPageProps)
         <div className="grid gap-6 p-5 sm:p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-8">
           <div>
             <div className="flex flex-wrap items-center gap-3">
-            <p className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+            <p className="rounded-lg bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
               {property.city}
             </p>
-            <p className="rounded-full bg-black/10 px-3 py-1 text-xs font-semibold">
+            <p className="rounded-lg bg-black/10 px-3 py-1 text-xs font-semibold">
               {property.kind ?? "HOUSE"}
             </p>
-            <p className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+            <p className="rounded-lg bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
               {property.listingTerm ?? "SALE"}
             </p>
             {property.featured ? (
-              <p className="rounded-full bg-black/10 px-3 py-1 text-xs font-semibold">
+              <p className="rounded-lg bg-black/10 px-3 py-1 text-xs font-semibold">
                 Featured Listing
               </p>
             ) : null}
@@ -205,30 +212,71 @@ export default async function PropertyDetailsPage({ params }: PropertyPageProps)
               </>
             ) : null}
 
-            <h2 id="contact-owner" className="mt-8 text-xl font-semibold">Contact Owner</h2>
-            <p className="mt-2 text-sm text-muted">
-              Send an enquiry to request inspection details or negotiate terms.
-            </p>
-            <LeadForm propertyId={property.id} />
+            {isOwner ? (
+              <div id="contact-owner" className="mt-8 rounded-xl border border-accent/20 bg-accent/5 p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+                    <svg className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-accent">This is your listing</p>
+                    <p className="text-xs text-muted">You are the owner of this property</p>
+                  </div>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <Link href="/my-listings" className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-accent/90">
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" /></svg>
+                    Manage Listings
+                  </Link>
+                  <Link href="/dashboard" className="inline-flex items-center gap-1.5 rounded-lg bg-black/[0.06] px-3.5 py-2 text-xs font-semibold transition hover:bg-black/[0.1]">
+                    Dashboard
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <>
+                <h2 id="contact-owner" className="mt-8 text-xl font-semibold">Contact Owner</h2>
+                <p className="mt-2 text-sm text-muted">
+                  Send an enquiry to request inspection details or negotiate terms.
+                </p>
+                <LeadForm propertyId={property.id} />
+              </>
+            )}
           </div>
 
           <aside className="md:sticky md:top-24 md:self-start">
-            <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted">Need a fast response?</p>
-              <p className="mt-2 text-sm text-muted">Send your enquiry now and include your preferred inspection time.</p>
-              <a
-                href="#contact-owner"
-                className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong"
-              >
-                Enquire About This Property
-              </a>
-            </div>
+            {isOwner ? (
+              <div className="rounded-2xl border border-accent/20 bg-accent/5 p-4">
+                <div className="flex items-center gap-2">
+                  <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <p className="text-xs font-bold text-accent">Your Listing</p>
+                </div>
+                <p className="mt-2 text-xs text-muted">This property was posted from your account. Manage it from your listings page.</p>
+                <Link
+                  href="/my-listings"
+                  className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent/90"
+                >
+                  Manage Listings
+                </Link>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted">Need a fast response?</p>
+                <p className="mt-2 text-sm text-muted">Send your enquiry now and include your preferred inspection time.</p>
+                <a
+                  href="#contact-owner"
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong"
+                >
+                  Enquire About This Property
+                </a>
+              </div>
+            )}
           </aside>
         </div>
       </article>
 
       {similarListings.length > 0 ? (
-        <section className="mt-6 rounded-3xl bg-surface p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+        <section className="mt-6 rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
           <h2 className="text-xl font-semibold">Similar Listings in {property.city}</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {similarListings.map((item) => (

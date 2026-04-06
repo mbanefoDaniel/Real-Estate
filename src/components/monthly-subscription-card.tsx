@@ -34,7 +34,7 @@ type MonthlySubscriptionCardProps = {
   className?: string;
 };
 
-export default function MonthlySubscriptionCard({ priceNgn, className }: MonthlySubscriptionCardProps) {
+export default function MonthlySubscriptionCard({ priceNgn }: MonthlySubscriptionCardProps) {
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(false);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
@@ -146,77 +146,101 @@ export default function MonthlySubscriptionCard({ priceNgn, className }: Monthly
 
   return (
     <article
-      className={`${className ?? ""} relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-[linear-gradient(165deg,rgba(255,255,255,0.96)_0%,rgba(241,248,249,0.98)_100%)] p-5 shadow-[0_16px_38px_rgba(0,0,0,0.10)] ring-1 ring-black/5 sm:p-6`}
+      className="relative flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 p-6 text-white shadow-sm ring-1 ring-white/10 transition hover:shadow-md"
     >
-      <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 translate-x-6 -translate-y-6 rounded-full bg-amber-200/45 blur-xl" />
-      <div className="relative z-10 flex h-full flex-col">
-        <p className="inline-flex rounded-full border border-amber-700/20 bg-amber-900/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-900/80">
-          Core Access
-        </p>
-        <h2 className="mt-3 text-xl font-semibold">Monthly Posting Subscription</h2>
-        <p className="mt-2 text-3xl font-bold">
+      <div>
+        <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/90">
+          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Required
+        </span>
+        <h2 className="mt-3 text-lg font-bold">Monthly Subscription</h2>
+        <p className="mt-0.5 text-xs text-white/60">Required to post listings</p>
+      </div>
+
+      <p className="mt-4">
+        <span className="text-3xl font-extrabold tracking-tight">
           {new Intl.NumberFormat("en-NG", {
             style: "currency",
             currency: "NGN",
             maximumFractionDigits: 0,
-          }).format(priceNgn)}{" "}
-          / month
-        </p>
-        <ul className="mt-4 space-y-2 text-sm text-muted">
-          <li>- Required to post properties</li>
-          <li>- Active for 30 days per payment</li>
-          <li>- Renew anytime from this page</li>
-        </ul>
+          }).format(priceNgn)}
+        </span>
+        <span className="ml-1 text-sm text-white/60">/ month</span>
+      </p>
 
-        <div className="mt-auto pt-6">
-          {checkedStatus && active ? (
-            <p className="rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">
-              Active subscription{formattedExpiry ? ` until ${formattedExpiry}` : ""}.
+      <ul className="mt-5 flex-1 space-y-2.5">
+        <li className="flex items-start gap-2 text-sm text-white/80">
+          <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+          Post unlimited properties
+        </li>
+        <li className="flex items-start gap-2 text-sm text-white/80">
+          <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+          Active for 30 days per payment
+        </li>
+        <li className="flex items-start gap-2 text-sm text-white/80">
+          <svg className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+          Renew anytime
+        </li>
+      </ul>
+
+      <div className="mt-6">
+        {checkedStatus && active ? (
+          <div className="rounded-lg bg-emerald-500/20 px-4 py-2.5 text-center">
+            <p className="text-sm font-semibold text-emerald-300">
+              ✓ Active{formattedExpiry ? ` until ${formattedExpiry}` : ""}
             </p>
-          ) : (
-            <button
-              type="button"
-              onClick={startSubscription}
-              disabled={loading}
-              className="inline-flex rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60"
-            >
-              {loading ? "Processing..." : "Subscribe Monthly"}
-            </button>
-          )}
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={startSubscription}
+            disabled={loading}
+            className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-white/90 disabled:opacity-60"
+          >
+            {loading ? (
+              <>
+                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                Processing...
+              </>
+            ) : (
+              "Subscribe Now"
+            )}
+          </button>
+        )}
 
-          {message ? <p className="mt-3 text-sm text-muted">{message}</p> : null}
-          {!active && lastReference ? (
-            <button
-              type="button"
-              onClick={async () => {
-                setLoading(true);
-                try {
-                  const response = await authFetch("/api/payments/subscription/verify", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ reference: lastReference }),
-                  });
-                  const result = await response.json().catch(() => ({}));
-                  if (!response.ok) {
-                    setMessage(result.error || "Still waiting for payment confirmation.");
-                    return;
-                  }
-                  setActive(result.status === "ACTIVE");
-                  setExpiresAt(result.expiresAt || null);
-                  setMessage(result.status === "ACTIVE" ? "Subscription is active." : "Subscription is pending.");
-                } catch {
-                  setMessage("Unable to recheck payment right now.");
-                } finally {
-                  setLoading(false);
+        {message ? <p className="mt-3 text-center text-xs text-white/60">{message}</p> : null}
+
+        {!active && lastReference ? (
+          <button
+            type="button"
+            onClick={async () => {
+              setLoading(true);
+              try {
+                const response = await authFetch("/api/payments/subscription/verify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ reference: lastReference }),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                  setMessage(result.error || "Still waiting for payment confirmation.");
+                  return;
                 }
-              }}
-              disabled={loading}
-              className="mt-3 inline-flex rounded-full border border-black/15 px-4 py-2 text-xs font-semibold transition hover:bg-black/5 disabled:opacity-60"
-            >
-              Recheck Payment Status
-            </button>
-          ) : null}
-        </div>
+                setActive(result.status === "ACTIVE");
+                setExpiresAt(result.expiresAt || null);
+                setMessage(result.status === "ACTIVE" ? "Subscription is active." : "Subscription is pending.");
+              } catch {
+                setMessage("Unable to recheck payment right now.");
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+            className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-white/20 px-4 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/10 disabled:opacity-60"
+          >
+            Recheck Payment Status
+          </button>
+        ) : null}
       </div>
     </article>
   );

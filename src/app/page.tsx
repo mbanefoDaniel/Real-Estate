@@ -124,7 +124,7 @@ export default async function Home() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 md:px-10 md:py-10">
-      <section className="relative overflow-hidden rounded-3xl border border-black/10 bg-[#0d1f23] p-6 text-white shadow-sm sm:p-8 md:p-10">
+      <section className="relative overflow-hidden rounded-2xl border border-black/10 bg-[#0d1f23] p-6 text-white shadow-sm sm:p-8 md:p-10">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(34,211,238,0.22),transparent_38%),radial-gradient(circle_at_85%_15%,rgba(245,158,11,0.18),transparent_36%),radial-gradient(circle_at_55%_100%,rgba(16,185,129,0.16),transparent_44%)]" />
           <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
@@ -146,13 +146,13 @@ export default async function Home() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/properties"
-                className="inline-flex rounded-full bg-amber-400 px-6 py-3 text-center text-sm font-semibold text-[#1f2a2c] transition hover:bg-amber-300"
+                className="inline-flex rounded-lg bg-amber-400 px-6 py-3 text-center text-sm font-semibold text-[#1f2a2c] transition hover:bg-amber-300"
               >
                 Explore Properties
               </Link>
               <Link
                 href="/sell"
-                className="inline-flex rounded-full border border-white/25 bg-white/10 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/20"
+                className="inline-flex rounded-lg border border-white/25 bg-white/10 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/20"
               >
                 Post a Listing
               </Link>
@@ -176,7 +176,7 @@ export default async function Home() {
 
           <Link
             href={`/properties/${heroSpotlight.id}`}
-            className="group overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md"
+            className="group overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/15 hover:shadow-md"
           >
             <div className="relative h-56 w-full">
               <Image

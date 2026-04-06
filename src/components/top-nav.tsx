@@ -157,7 +157,7 @@ function MenuItem({
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   label: string;
   description?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   badge?: string | null;
   badgeColor?: string;
   variant?: "default" | "danger" | "accent";
@@ -379,7 +379,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
               <MenuItem href="/admin" icon={IconShield} label="Admin Dashboard" description="Moderation & settings" onClick={close} variant="accent" />
             ) : null}
             <MenuDivider />
-            <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={() => { clearAuthToken(); close(); }} variant="danger" />
+            <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={(e) => { e.preventDefault(); clearAuthToken(); window.location.href = "/api/auth/signout?next=/auth/sign-in"; }} variant="danger" />
           </>
         ) : (
           <>
@@ -394,73 +394,66 @@ export default function TopNav({ initialUser }: TopNavProps) {
 
   return (
     <>
-    <header className="sticky top-0 z-[120] border-b border-black/10 bg-white/90 backdrop-blur">
-      <nav className="relative mx-auto w-full max-w-7xl px-3 py-3 sm:px-6 md:px-10">
+    <header className="sticky top-0 z-[120] border-b border-black/[0.06] bg-white/80 backdrop-blur-xl">
+      <nav className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 md:px-10">
 
-        {/* ─── MOBILE ──────────────────────────────────────────── */}
-        <div className="flex items-center justify-between sm:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileOpen(true)}
-            className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/15 px-4 py-2 text-xs font-semibold transition hover:bg-accent hover:text-white"
-            aria-label="Open navigation menu"
-          >
-            <IconMenu className="h-4 w-4" aria-hidden="true" />
-            Menu
-          </button>
+        {/* ─── BRAND ───────────────────────────────────────────── */}
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
+            <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5L12 3l9 7.5" /><path d="M5 9.5V20h14V9.5" /></svg>
+          </div>
+          <span className="hidden text-base font-bold tracking-tight sm:inline">Christoland</span>
+        </Link>
+
+        {/* ─── DESKTOP NAV LINKS ───────────────────────────────── */}
+        <div className="hidden items-center gap-1 md:flex">
+          {sharedLinks.map((link) => {
+            const active = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold transition ${
+                  active
+                    ? "bg-accent/[0.08] text-accent"
+                    : "text-foreground/70 hover:bg-black/[0.04] hover:text-foreground"
+                }`}
+              >
+                <link.icon className="h-3.5 w-3.5" aria-hidden="true" />
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* ─── DESKTOP / TABLET ────────────────────────────────── */}
-        <div className="hidden sm:flex sm:items-center sm:justify-between">
-          <div className="flex w-full items-center gap-2 overflow-x-auto pb-1 sm:w-auto sm:overflow-visible sm:pb-0">
-            {sharedLinks.map((link) => {
-              const active = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                    active
-                      ? "border-accent bg-accent text-white"
-                      : "border-black/15 hover:bg-accent hover:text-white"
-                  }`}
-                >
-                  <link.icon className="h-3.5 w-3.5" aria-hidden="true" />
-                  {link.label}
-                </Link>
-              );
-            })}
-          </div>
-
+        {/* ─── RIGHT ACTIONS ───────────────────────────────────── */}
+        <div className="flex items-center gap-2">
           {sessionUser ? (
             <div ref={desktopRef} className="relative z-[130]">
               <button
                 type="button"
                 onClick={() => setDesktopOpen((prev) => !prev)}
-                className={`inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                className={`hidden cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5 text-[13px] font-semibold transition sm:inline-flex ${
                   desktopOpen
-                    ? "border-accent bg-accent text-white"
-                    : "border-black/15 hover:bg-accent hover:text-white"
+                    ? "border-accent/20 bg-accent/[0.08] text-accent"
+                    : "border-black/[0.08] bg-white hover:border-black/[0.12] hover:bg-black/[0.02]"
                 }`}
                 aria-haspopup="menu"
                 aria-expanded={desktopOpen}
               >
                 <Avatar src={profileImageUrl} size="sm" />
-                My Menu
-                <IconChevron
-                  className={`h-3 w-3 transition-transform ${desktopOpen ? "rotate-90" : ""}`}
-                  aria-hidden="true"
-                />
+                <span className="hidden lg:inline">Account</span>
+                <svg className={`h-3 w-3 text-muted transition-transform ${desktopOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
               </button>
 
               {desktopOpen ? (
                 <div
-                  className="absolute right-0 z-[140] mt-2.5 w-72 origin-top-right rounded-2xl border border-black/[0.08] bg-white p-2 shadow-xl ring-1 ring-black/[0.04] animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute right-0 z-[140] mt-2 w-72 origin-top-right rounded-xl border border-black/[0.06] bg-white p-1.5 shadow-lg shadow-black/[0.08] ring-1 ring-black/[0.03]"
                   role="menu"
                 >
                   {/* user info header */}
-                  <div className="mb-1 rounded-xl bg-gradient-to-br from-accent/5 to-transparent px-3 py-3">
-                    <div className="flex items-center gap-3">
+                  <div className="mb-1 rounded-lg bg-black/[0.025] px-3 py-2.5">
+                    <div className="flex items-center gap-2.5">
                       <Avatar src={profileImageUrl} />
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold">{sessionUser.email}</p>
@@ -495,28 +488,38 @@ export default function TopNav({ initialUser }: TopNavProps) {
                     <MenuItem href="/admin" icon={IconShield} label="Admin Dashboard" description="Moderation & settings" onClick={closeDesktop} variant="accent" />
                   ) : null}
                   <MenuDivider />
-                  <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={() => { clearAuthToken(); closeDesktop(); }} variant="danger" />
+                  <MenuItem href="/api/auth/signout?next=/auth/sign-in" icon={IconLogOut} label="Sign Out" onClick={(e) => { e.preventDefault(); clearAuthToken(); window.location.href = "/api/auth/signout?next=/auth/sign-in"; }} variant="danger" />
                 </div>
               ) : null}
             </div>
           ) : (
-            <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
+            <div className="hidden items-center gap-1.5 sm:flex">
               <Link
                 href="/auth/sign-in"
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-black/15 px-4 py-2 text-sm font-semibold transition hover:bg-accent hover:text-white"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-[13px] font-semibold text-foreground/70 transition hover:bg-black/[0.04] hover:text-foreground"
               >
                 <IconLogIn className="h-3.5 w-3.5" aria-hidden="true" />
                 Sign In
               </Link>
               <Link
                 href="/auth/sign-up"
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-accent bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-accent px-3.5 py-2 text-[13px] font-semibold text-white transition hover:bg-accent/90"
               >
                 <IconUserPlus className="h-3.5 w-3.5" aria-hidden="true" />
                 Sign Up
               </Link>
             </div>
           )}
+
+          {/* ─── MOBILE HAMBURGER ────────────────────────────────── */}
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="inline-flex cursor-pointer items-center justify-center rounded-lg p-2 text-foreground/60 transition hover:bg-black/[0.04] hover:text-foreground sm:hidden"
+            aria-label="Open navigation menu"
+          >
+            <IconMenu className="h-5 w-5" aria-hidden="true" />
+          </button>
         </div>
       </nav>
     </header>
@@ -527,14 +530,19 @@ export default function TopNav({ initialUser }: TopNavProps) {
           <div className="fixed inset-0 z-[9999] sm:hidden" ref={mobileRef}>
             {/* backdrop */}
             <div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/30 backdrop-blur-sm"
               onClick={closeMobile}
               aria-hidden="true"
             />
             {/* panel */}
             <div className="absolute inset-y-0 left-0 flex w-[min(20rem,85vw)] flex-col bg-white shadow-2xl">
-              <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3.5">
-                <span className="text-sm font-bold tracking-tight text-accent">Menu</span>
+              <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
+                <Link href="/" onClick={closeMobile} className="flex items-center gap-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent">
+                    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5L12 3l9 7.5" /><path d="M5 9.5V20h14V9.5" /></svg>
+                  </div>
+                  <span className="text-sm font-bold tracking-tight">Christoland</span>
+                </Link>
                 <button
                   type="button"
                   onClick={closeMobile}
@@ -547,7 +555,7 @@ export default function TopNav({ initialUser }: TopNavProps) {
 
               {sessionUser ? (
                 <div className="border-b border-black/[0.06] px-4 py-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <Avatar src={profileImageUrl} />
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{sessionUser.email}</p>

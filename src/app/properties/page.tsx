@@ -284,7 +284,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8 sm:px-6 md:px-10 md:py-10">
-      <section className="relative overflow-hidden rounded-3xl border border-black/10 bg-surface/95 p-6 shadow-sm sm:p-8">
+      <section className="relative overflow-hidden rounded-2xl border border-black/10 bg-surface/95 p-6 shadow-sm sm:p-8">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-16 -top-20 h-56 w-56 rounded-full bg-cyan-300/18 blur-3xl" />
           <div className="absolute right-0 top-8 h-60 w-60 rounded-full bg-amber-200/22 blur-3xl" />
@@ -297,14 +297,14 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             Use advanced filters to narrow results by price, property type, and location.
           </p>
           <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
-            <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-muted">Verified listings</span>
-            <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-muted">For sale and lease</span>
-            <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-muted">City-based search</span>
+            <span className="rounded-lg border border-black/10 bg-white px-3 py-1 text-muted">Verified listings</span>
+            <span className="rounded-lg border border-black/10 bg-white px-3 py-1 text-muted">For sale and lease</span>
+            <span className="rounded-lg border border-black/10 bg-white px-3 py-1 text-muted">City-based search</span>
           </div>
         </div>
       </section>
 
-      <section className="mt-6 rounded-3xl border border-black/10 bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6">
+      <section className="mt-6 rounded-2xl border border-black/10 bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold">Advanced Search</h2>
@@ -406,13 +406,13 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           <div className="flex items-center gap-2 sm:col-span-2 lg:col-span-1">
             <button
               type="submit"
-              className="w-full rounded-full bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong"
+              className="w-full rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong"
             >
               Search
             </button>
             <Link
               href="/properties"
-              className="w-full rounded-full border border-black/15 px-5 py-3 text-center text-sm font-semibold transition hover:bg-black/5"
+              className="w-full rounded-lg border border-black/15 px-5 py-3 text-center text-sm font-semibold transition hover:bg-black/5"
             >
               Reset
             </Link>
@@ -430,7 +430,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             <Link
               key={property.id}
               href={`/properties/${property.id}`}
-              className="group overflow-hidden rounded-3xl border border-black/10 bg-surface shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              className="group overflow-hidden rounded-2xl border border-black/10 bg-surface shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
             >
               <article>
                 <div className="relative h-48 w-full overflow-hidden sm:h-56">
@@ -443,14 +443,14 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <div className="absolute left-4 top-4 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#1f2a2c] backdrop-blur-sm">
+                    <span className="rounded-lg bg-white/90 px-3 py-1 text-xs font-semibold text-[#1f2a2c] backdrop-blur-sm">
                       {titleCase(property.kind)}
                     </span>
-                    <span className="rounded-full bg-amber-300/90 px-3 py-1 text-xs font-semibold text-[#1f2a2c] backdrop-blur-sm">
+                    <span className="rounded-lg bg-amber-300/90 px-3 py-1 text-xs font-semibold text-[#1f2a2c] backdrop-blur-sm">
                       {property.listingTerm === "SALE" ? "For Sale" : "For Lease"}
                     </span>
                     {property.featured ? (
-                      <span className="rounded-full bg-cyan-300/90 px-3 py-1 text-xs font-semibold text-[#1f2a2c] backdrop-blur-sm">
+                      <span className="rounded-lg bg-cyan-300/90 px-3 py-1 text-xs font-semibold text-[#1f2a2c] backdrop-blur-sm">
                         Featured
                       </span>
                     ) : null}
@@ -467,7 +467,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
                   </p>
                   <div className="mt-4 flex items-end justify-between gap-3">
                     <p className="text-2xl font-bold text-accent">{ngn(property.price)}</p>
-                    <span className="rounded-full border border-black/10 px-3 py-1 text-xs font-semibold text-muted">
+                    <span className="rounded-lg border border-black/10 px-3 py-1 text-xs font-semibold text-muted">
                       View Details
                     </span>
                   </div>
@@ -489,58 +489,37 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         )}
       </section>
 
-      <section className="mt-6 mx-auto w-full max-w-3xl rounded-2xl border border-black/10 bg-white/85 p-3 shadow-sm backdrop-blur-sm sm:p-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M3 12h18" />
-                <path d="M3 6h18" />
-                <path d="M3 18h18" />
-              </svg>
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-foreground leading-tight">
-                Showing page {safePage} of {totalPages}
-              </p>
-              <p className="text-xs text-muted leading-tight">
-                {result.total.toLocaleString("en-NG")} total listings found
-              </p>
-            </div>
-          </div>
+      <div className="mt-5 flex items-center justify-center gap-2 text-sm">
+        {showPrev ? (
+          <Link
+            href={buildPageHref(safePage - 1, query)}
+            className="inline-flex items-center gap-1 rounded-lg border border-black/[0.08] px-3 py-1.5 text-xs font-semibold transition hover:bg-black/[0.04]"
+          >
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+            Prev
+          </Link>
+        ) : null}
 
-          <div className="flex items-center gap-2">
-          {showPrev ? (
-            <Link
-              href={buildPageHref(safePage - 1, query)}
-              className="rounded-full border border-black/15 bg-white px-4 py-2 text-sm font-semibold transition hover:bg-black/5"
-            >
-              Previous
-            </Link>
-          ) : null}
+        <span className="rounded-lg bg-black/[0.04] px-3 py-1.5 text-xs font-semibold text-muted">
+          {safePage} / {totalPages}
+          <span className="ml-1.5 text-muted/60">({result.total.toLocaleString("en-NG")})</span>
+        </span>
 
-          {showNext ? (
-            <Link
-              href={buildPageHref(safePage + 1, query)}
-              className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-strong"
-            >
-              Next
-            </Link>
-          ) : null}
-
-            {!showPrev && !showNext ? (
-              <span className="rounded-full border border-black/10 bg-black/[0.02] px-3 py-1 text-xs font-semibold text-muted">
-                End of results
-              </span>
-            ) : null}
-          </div>
-        </div>
-      </section>
+        {showNext ? (
+          <Link
+            href={buildPageHref(safePage + 1, query)}
+            className="inline-flex items-center gap-1 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-accent/90"
+          >
+            Next
+            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+          </Link>
+        ) : null}
+      </div>
 
       <RecentlyViewedStrip />
 
       <section className="mt-10 grid gap-4 lg:grid-cols-2">
-        <article className="rounded-3xl border border-black/10 bg-surface/95 p-5 shadow-sm sm:p-6">
+        <article className="rounded-2xl border border-black/10 bg-surface/95 p-5 shadow-sm sm:p-6">
           <h2 className="text-xl font-semibold">Available Land For Sale</h2>
           <p className="mt-2 text-sm text-muted">{landForSale.length} active listings</p>
           <div className="mt-4 space-y-3">
@@ -571,7 +550,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
           </div>
         </article>
 
-        <article className="rounded-3xl border border-black/10 bg-surface/95 p-5 shadow-sm sm:p-6">
+        <article className="rounded-2xl border border-black/10 bg-surface/95 p-5 shadow-sm sm:p-6">
           <h2 className="text-xl font-semibold">Available Land For Lease</h2>
           <p className="mt-2 text-sm text-muted">{landForLease.length} active listings</p>
           <div className="mt-4 space-y-3">
@@ -603,7 +582,7 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
         </article>
       </section>
 
-      <section className="relative mt-10 overflow-hidden rounded-3xl border border-black/10 bg-[#102a31] p-5 text-white shadow-sm sm:p-7">
+      <section className="relative mt-10 overflow-hidden rounded-2xl border border-black/10 bg-[#102a31] p-5 text-white shadow-sm sm:p-7">
         <div
           className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-85"
           style={{ backgroundImage: "url('/city-landing-bg.svg')" }}

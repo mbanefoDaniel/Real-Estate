@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState, useLayoutEffect } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 import TurnstileCaptcha from "@/components/turnstile-captcha";
 import { saveAuthToken } from "@/lib/auth-fetch";
@@ -92,8 +92,8 @@ export default function SignInPage() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-8 sm:px-6 md:py-12">
-      <section className="rounded-3xl bg-surface p-6 shadow-sm ring-1 ring-black/5 sm:p-8">
-        <h1 className="text-2xl font-semibold sm:text-3xl">Sign in</h1>
+      <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/[0.06] sm:p-8">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Sign in</h1>
         <p className="mt-2 text-sm text-muted">Access your listings and lead inbox securely.</p>
 
         {adminRedirectRequested ? (
@@ -142,7 +142,7 @@ export default function SignInPage() {
           <button
             type="submit"
             disabled={status.type === "loading"}
-            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60"
+            className="rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60"
           >
             {status.type === "loading" ? "Signing in..." : "Sign in"}
           </button>
@@ -151,9 +151,18 @@ export default function SignInPage() {
         </form>
 
         {status.message ? (
-          <p className={`mt-4 text-sm ${status.type === "error" ? "text-red-600" : "text-accent"}`}>
+          <div className={`mt-4 flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium ${
+            status.type === "error"
+              ? "border-red-200 bg-red-50 text-red-700"
+              : "border-emerald-200 bg-emerald-50 text-emerald-700"
+          }`}>
+            {status.type === "error" ? (
+              <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            ) : (
+              <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            )}
             {status.message}
-          </p>
+          </div>
         ) : null}
 
         <p className="mt-5 text-sm text-muted">
