@@ -28,8 +28,14 @@ export default function SignUpPage() {
 
     try {
       const formData = new FormData(event.currentTarget);
+      const name = String(formData.get("name") || "").trim();
       const email = String(formData.get("email") || "").trim();
       const password = String(formData.get("password") || "");
+
+      if (!name) {
+        setStatus({ type: "error", message: "Full name is required." });
+        return;
+      }
 
       if (!email || !password) {
         setStatus({ type: "error", message: "Email and password are required." });
@@ -47,7 +53,7 @@ export default function SignUpPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: formData.get("name"),
+          name,
           email,
           password,
           captchaToken,
@@ -86,7 +92,8 @@ export default function SignUpPage() {
         <form className="mt-6 grid gap-4" onSubmit={handleSubmit} noValidate>
           <input
             name="name"
-            placeholder="Full name (optional)"
+            required
+            placeholder="Full name"
             className="rounded-xl border border-black/10 bg-white px-4 py-3"
           />
           <input

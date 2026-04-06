@@ -43,9 +43,16 @@ export async function POST(request: NextRequest) {
     const email = parseRequiredString(body.email)?.toLowerCase();
     const password = parseRequiredString(body.password);
 
+    if (!name) {
+      return NextResponse.json(
+        { error: "Full name is required." },
+        { status: 400 }
+      );
+    }
+
     if (!email || !password) {
       return NextResponse.json(
-        { error: "email and password are required." },
+        { error: "Email and password are required." },
         { status: 400 }
       );
     }

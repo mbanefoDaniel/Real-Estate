@@ -250,10 +250,12 @@ export async function PATCH(
 
     const imageUrl = parseRequiredString(body.imageUrl);
     const featured =
-      body.featured === true ||
-      body.featured === "true" ||
-      body.featured === 1 ||
-      body.featured === "1";
+      isAdmin && status === "REJECTED"
+        ? false
+        : body.featured === true ||
+          body.featured === "true" ||
+          body.featured === 1 ||
+          body.featured === "1";
 
     const updateData: Record<string, unknown> = {
       title,
@@ -288,6 +290,17 @@ export async function PATCH(
         },
       },
     });
+
+    // Cancel active featured payments when an admin rejects a listing
+    if (isAdmin && status === "REJECTED" && existingProperty.featured) {
+      await prisma.featuredPayment.updateMany({
+        where: {
+          propertyId: id,
+          status: { in: ["PENDING", "PAID"] },
+        },
+        data: { status: "CANCELLED" },
+      });
+    }
 
     if (isAdmin && status !== existingProperty.status && (status === "APPROVED" || status === "REJECTED")) {
       try {
