@@ -35,7 +35,11 @@ export async function POST(request: NextRequest) {
     const amountNgn = getMonthlyAmountNgn();
     const amountKobo = amountNgn * 100;
     const reference = `sub_monthly_${Date.now()}_${randomUUID().slice(0, 8)}`;
-    const baseUrl = process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl =
+      process.env.APP_BASE_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+      "http://localhost:3000";
     const callbackUrl = `${baseUrl}/pricing?subscription=success&ref=${encodeURIComponent(reference)}`;
 
     const paystackSecret = process.env.PAYSTACK_SECRET_KEY;

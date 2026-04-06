@@ -68,7 +68,11 @@ export async function POST(request: NextRequest) {
     const amountNgn = getPlanAmountNgn(plan);
     const amountKobo = Number.isFinite(amountNgn) && amountNgn > 0 ? Math.round(amountNgn * 100) : 500000;
     const reference = `feat_${plan.toLowerCase()}_${Date.now()}_${randomUUID().slice(0, 8)}`;
-    const baseUrl = process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+    const baseUrl =
+      process.env.APP_BASE_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+      "http://localhost:3001";
 
     let paymentUrl: string | null = null;
 
