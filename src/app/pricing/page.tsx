@@ -112,25 +112,33 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ / Info */}
-      <section className="mt-12 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/[0.06] sm:p-8">
-        <h2 className="text-xl font-bold">Frequently Asked Questions</h2>
-        <div className="mt-5 grid gap-6 sm:grid-cols-2">
-          <div>
-            <h3 className="text-sm font-semibold">Do I need a subscription to post?</h3>
-            <p className="mt-1 text-sm text-muted">Yes. An active monthly subscription is required to create new property listings. Existing listings remain visible.</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold">When does my boost start?</h3>
-            <p className="mt-1 text-sm text-muted">Boosts activate as soon as payment is confirmed and your listing is approved by an admin.</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold">Can I boost multiple listings?</h3>
-            <p className="mt-1 text-sm text-muted">Absolutely. Each boost is per-listing, so you can promote as many properties as you like simultaneously.</p>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold">What payment methods are accepted?</h3>
-            <p className="mt-1 text-sm text-muted">We accept all payment methods supported by Paystack — cards, bank transfers, USSD, and mobile money.</p>
-          </div>
+      <section className="mt-14">
+        <div className="mb-6 text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/[0.08] px-3 py-1 text-xs font-semibold tracking-wide text-accent">
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            FAQ
+          </span>
+          <h2 className="mt-2 text-xl font-bold tracking-tight">Frequently Asked Questions</h2>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { q: "Do I need a subscription to post?", a: "Yes. An active monthly subscription is required to create new property listings. Existing listings remain visible." },
+            { q: "When does my boost start?", a: "Boosts activate as soon as payment is confirmed and your listing is approved by an admin." },
+            { q: "Can I boost multiple listings?", a: "Absolutely. Each boost is per-listing, so you can promote as many properties as you like simultaneously." },
+            { q: "What payment methods are accepted?", a: "We accept all payment methods supported by Paystack — cards, bank transfers, USSD, and mobile money." },
+          ].map((item, i) => (
+            <details key={i} className="group rounded-xl bg-white ring-1 ring-black/[0.06] transition-shadow hover:shadow-sm">
+              <summary className="flex cursor-pointer select-none items-center gap-3 px-5 py-4 text-sm font-semibold text-foreground">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent/[0.08] text-accent text-xs font-bold">{i + 1}</span>
+                <span className="flex-1">{item.q}</span>
+                <svg className="h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              </summary>
+              <div className="border-t border-black/[0.06] px-5 py-3.5 text-sm leading-relaxed text-muted">
+                {item.a}
+              </div>
+            </details>
+          ))}
         </div>
       </section>
     </main>
